@@ -122,6 +122,53 @@ class UserService
     }
 
 
+    public function updateUser(string $id, ?array $data = null): array
+    {
+        if (empty($id) || empty($data) || $data === null) {
+            return [
+                'body' => ['error' => 'Invalid body request'],
+                'status' => Response::HTTP_BAD_REQUEST
+            ];
+        }
+
+        $user = $this->userRepository->findOneBy(['id' => $id]);
+        if (!$user) {
+            return [
+                'body' => ['error' => 'User not found'],
+                'status' => Response::HTTP_NOT_FOUND
+            ];
+        }
+
+        $requiredFields = ['name', 'username'];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                return [
+                    'body' => ['error' => 'Missing required field/s in body request'],
+                    'status' => Response::HTTP_BAD_REQUEST
+                ];
+            }
+        }
+
+        $user->setName($data['name']);
+        $user->setUsername($data['username']);
+
+        $errors = $this->validator->validate($user);
+        if (count($errors) > 0) {
+            return [
+                'body' => ['error' => (string) $errors],
+                'status' => Response::HTTP_BAD_REQUEST
+            ];
+        }
+
+        $this->entityManager->flush();
+
+        return [
+            'body' => ['message' => 'User updated successfully'],
+            'status' => Response::HTTP_OK
+        ];
+    }
+
+
     public function listAllUsers(): array
     {
         $users = $this->userRepository->findAll();
@@ -144,13 +191,20 @@ class UserService
     }
 
 
-    public function listUsersByParam(string $param, string $query_value): array
+    public function listUsersByParam(string $param, ?string $query_value = null): array
     {
         $paramOptions = ['id', 'name', 'username', 'email', 'role'];
 
-        if (empty($param) && !in_array($param, $paramOptions)) {
+        if (empty($param) || !in_array($param, $paramOptions)) {
             return [
-                'body' => ['error' => 'Missing required field or field not allowed'],
+                'body' => ['error' => 'Parameter not allowed'],
+                'status' => Response::HTTP_BAD_REQUEST
+            ];
+        }
+        
+        if ($query_value === null) {
+            return [
+                'body' => ['error' => 'Missing value parameter in query string'],
                 'status' => Response::HTTP_BAD_REQUEST
             ];
         }
