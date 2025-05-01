@@ -7,11 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Route('/user', name: 'user')]
 
 final class UserController extends AbstractController{
-    #[Route('/register', name: 'user_register', methods: ['POST'])]
+    #[Route('', name: 'user_register', methods: ['POST'])]
     public function user_register(
         Request $request, 
         UserService $userService
@@ -25,40 +26,49 @@ final class UserController extends AbstractController{
         return $this -> json($result['body'], $result['status']);
     }
 
-    #[Route('/delete', name: 'user_delete', methods: ['DELETE'])]
+
+    #[Route('/{id}', name: 'user_delete', methods: ['DELETE'])]
     public function user_delete(
+        string $id,
         Request $request, 
         UserService $userService
     ): JsonResponse
     {
-        $body = $request -> getContent();
-        $data = json_decode($body, true);
 
-        $result  = $userService -> deleteUser($data);
+        $result  = $userService -> deleteUser($id);
 
         return $this -> json($result['body'], $result['status']);
     }
 
-    #[Route('/list', name: 'users_list', methods: ['GET'])]
+
+    #[Route('', name: 'user_list', methods: ['GET'])]
     public function users_list(
         UserService $userService
     ): JsonResponse
     {
-        $result  = $userService -> listUsers();
+        $result  = $userService -> listAllUsers();
 
         return $this -> json($result['body'], $result['status']);
     }
 
-    #[Route('/listparam', name: 'users_param_list', methods: ['GET'])]
+
+    #[Route('/{param}', name: 'user_list_param', methods: ['GET'])]
     public function users_param_list(
+        string $param,
         Request $request, 
         UserService $userService
     ): JsonResponse
     {
-        $body = $request -> getContent();
-        $data = json_decode($body, true);
+        $query_value = $request -> query -> get('value');
 
-        $result  = $userService -> listUsersByParam($data);
+        if (!$query_value) {
+            return $this -> json([
+                'body' => ['error' => 'Missing value parameter in query string'],
+                'status' => Response::HTTP_BAD_REQUEST
+            ]);
+        }
+
+        $result  = $userService -> listUsersByParam($param, $query_value);
 
         return $this -> json($result['body'], $result['status']);
     }

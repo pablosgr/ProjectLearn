@@ -93,18 +93,18 @@ class UserService
     }
 
 
-    public function deleteUser(array $data): array
+    public function deleteUser(string $id): array
     {
         
-        if (empty($data['username'])) {
+        if (empty($id)) {
             return [
-                'body' => ['error' => 'Missing required field/s'],
+                'body' => ['error' => 'Missing required field'],
                 'status' => Response::HTTP_BAD_REQUEST
             ];
         }
         
 
-        $user = $this->userRepository->findOneBy(['username' => $data['username']]);
+        $user = $this->userRepository->findOneBy(['id' => $id]);
         if (!$user) {
             return [
                 'body' => ['error' => 'User not found'],
@@ -122,7 +122,7 @@ class UserService
     }
 
 
-    public function listUsers(): array
+    public function listAllUsers(): array
     {
         $users = $this->userRepository->findAll();
         $userList = [];
@@ -144,18 +144,18 @@ class UserService
     }
 
 
-    public function listUsersByParam(array $data): array
+    public function listUsersByParam(string $param, string $query_value): array
     {
         $paramOptions = ['id', 'name', 'username', 'email', 'role'];
 
-        if (empty($data['param']) && !in_array($data['param'], $paramOptions)) {
+        if (empty($param) && !in_array($param, $paramOptions)) {
             return [
                 'body' => ['error' => 'Missing required field or field not allowed'],
                 'status' => Response::HTTP_BAD_REQUEST
             ];
         }
 
-        $users = $this->userRepository->findBy([$data['param'] => $data['value']]);
+        $users = $this->userRepository->findBy([$param => $query_value]);
         if (empty($users)) {
             return [
                 'body' => ['error' => 'No users found'],
