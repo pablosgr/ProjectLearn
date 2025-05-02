@@ -172,6 +172,13 @@ class UserService
     public function listAllUsers(): array
     {
         $users = $this->userRepository->findAll();
+        if (empty($users)) {
+            return [
+                'body' => ['error' => 'No users found'],
+                'status' => Response::HTTP_NOT_FOUND
+            ];
+        }
+
         $userList = [];
 
         foreach ($users as $user) {
@@ -197,7 +204,7 @@ class UserService
 
         if (empty($param) || !in_array($param, $paramOptions)) {
             return [
-                'body' => ['error' => 'Parameter not allowed'],
+                'body' => ['error' => 'Parameter missing or not allowed'],
                 'status' => Response::HTTP_BAD_REQUEST
             ];
         }

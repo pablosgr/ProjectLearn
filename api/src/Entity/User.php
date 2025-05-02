@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\UserRole;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\DBAL\Types\Types;
@@ -36,6 +38,12 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    /**
+     * @var Collection<int, Classroom>
+     */
+    #[ORM\OneToMany(targetEntity: Classroom::class, mappedBy: 'teacher_id', orphanRemoval: true)]
+    private Collection $taught_classrooms;
+
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
@@ -45,6 +53,7 @@ class User implements PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->id = Uuid::v4()->toRfc4122();
+        $this->taught_classrooms = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -122,5 +131,35 @@ class User implements PasswordAuthenticatedUserInterface
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->created_at;
+    }
+
+    /**
+     * @return Collection<int, Classroom>
+     */
+    public function getTaughtClassrooms(): Collection
+    {
+        return $this->taught_classrooms;
+    }
+
+    public function addTaughtClassroom(Classroom $taughtClassroom): static
+    {
+        if (!$this->taught_classrooms->contains($taughtClassroom)) {
+            $this->taught_classrooms->add($taughtClassroom);
+            $taughtClassroom->setTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTaughtClassroom(Classroom $taughtClassroom): static
+    {
+        if ($this->taught_classrooms->removeElement($taughtClassroom)) {
+            // set the owning side to null (unless already changed)
+            if ($taughtClassroom->getTeacher() === $this) {
+                $taughtClassroom->setTeacher(null);
+            }
+        }
+
+        return $this;
     }
 }
