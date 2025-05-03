@@ -3,14 +3,11 @@
 namespace App\Service;
 
 use App\Entity\Classroom;
-use App\Entity\User;
 use App\Enum\UserRole;
 use App\Repository\ClassroomRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ClassroomService
 {
@@ -18,8 +15,6 @@ class ClassroomService
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
         private ClassroomRepository $classroomRepository,
-        private ValidatorInterface $validator,
-        private UserPasswordHasherInterface $passwordHasher,
     ) {}
     
 
