@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Category;;
+use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,34 +62,6 @@ class CategoryService
 
         return [
             'body' => ['message' => 'Category deleted successfully'],
-            'status' => Response::HTTP_OK
-        ];
-    }
-
-
-    public function updateCategory(int $id, ?array $data = null): array
-    {
-        $category = $this->categoryRepository->find($id);
-        if (!$category) {
-            return [
-                'body' => ['message' => 'Category not found'],
-                'status' => Response::HTTP_NOT_FOUND
-            ];
-        }
-
-        if (empty($data) || !isset($data['name'])) {
-            return [
-                'body' => ['error' => 'Missing or incorrect field in body request'],
-                'status' => Response::HTTP_BAD_REQUEST
-            ];
-        }
-
-        $newName = $data['name'];
-        $category->setName($newName);
-        $this->entityManager->flush();
-
-        return [
-            'body' => ['message' => "Category name successfully updated to $newName"],
             'status' => Response::HTTP_OK
         ];
     }

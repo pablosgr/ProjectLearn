@@ -44,6 +44,9 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Classroom::class, mappedBy: 'teacher_id', orphanRemoval: true)]
     private Collection $taught_classrooms;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $picture = null;
+
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
@@ -159,6 +162,18 @@ class User implements PasswordAuthenticatedUserInterface
                 $taughtClassroom->setTeacher(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPicture(): ?string
+    {
+        return $this->picture;
+    }
+
+    public function setPicture(?string $picture): static
+    {
+        $this->picture = $picture;
 
         return $this;
     }
