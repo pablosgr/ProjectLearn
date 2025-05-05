@@ -31,7 +31,7 @@ class Classroom
      */
     #[ORM\OneToMany(targetEntity: Unit::class, mappedBy: 'classroom')]
     private Collection $units;
-
+    
     public function __construct()
     {
         $this->units = new ArrayCollection();
