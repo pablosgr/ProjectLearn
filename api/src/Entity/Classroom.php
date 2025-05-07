@@ -37,11 +37,25 @@ class Classroom
      */
     #[ORM\OneToMany(targetEntity: TestResult::class, mappedBy: 'classroom')]
     private Collection $testResults;
+
+    /**
+     * @var Collection<int, StudentClass>
+     */
+    #[ORM\OneToMany(targetEntity: StudentClass::class, mappedBy: 'classroom', orphanRemoval: true)]
+    private Collection $enrolledStudents;
+
+    /**
+     * @var Collection<int, TestAssignment>
+     */
+    #[ORM\OneToMany(targetEntity: TestAssignment::class, mappedBy: 'classroom', orphanRemoval: true)]
+    private Collection $testAssignments;
     
     public function __construct()
     {
         $this->units = new ArrayCollection();
         $this->testResults = new ArrayCollection();
+        $this->enrolledStudents = new ArrayCollection();
+        $this->testAssignments = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -139,6 +153,60 @@ class Classroom
             if ($testResult->getClassroom() === $this) {
                 $testResult->setClassroom(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StudentClass>
+     */
+    public function getEnrolledStudents(): Collection
+    {
+        return $this->enrolledStudents;
+    }
+
+    public function addEnrolledStudent(StudentClass $enrollment): static
+    {
+        if (!$this->enrolledStudents->contains($enrollment)) {
+            $this->enrolledStudents->add($enrollment);
+            $enrollment->setClassroom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrolledStudent(StudentClass $enrollment): static
+    {
+        if ($this->enrolledStudents->removeElement($enrollment)) {
+            // Not setting null because the entity has a composite primary key
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TestAssignment>
+     */
+    public function getTestAssignments(): Collection
+    {
+        return $this->testAssignments;
+    }
+
+    public function addTestAssignment(TestAssignment $testAssignment): static
+    {
+        if (!$this->testAssignments->contains($testAssignment)) {
+            $this->testAssignments->add($testAssignment);
+            $testAssignment->setClassroom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTestAssignment(TestAssignment $testAssignment): static
+    {
+        if ($this->testAssignments->removeElement($testAssignment)) {
+            // Not setting null because the entity has a composite primary key
         }
 
         return $this;

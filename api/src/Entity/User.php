@@ -59,6 +59,12 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: TestResult::class, mappedBy: 'student')]
     private Collection $testResults;
 
+    /**
+     * @var Collection<int, StudentClass>
+     */
+    #[ORM\OneToMany(targetEntity: StudentClass::class, mappedBy: 'student', orphanRemoval: true)]
+    private Collection $enrolledClasses;
+
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
@@ -71,6 +77,7 @@ class User implements PasswordAuthenticatedUserInterface
         $this->taught_classrooms = new ArrayCollection();
         $this->created_tests = new ArrayCollection();
         $this->testResults = new ArrayCollection();
+        $this->enrolledClasses = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -247,6 +254,33 @@ class User implements PasswordAuthenticatedUserInterface
             if ($testResult->getStudent() === $this) {
                 $testResult->setStudent(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, StudentClass>
+     */
+    public function getEnrolledClasses(): Collection
+    {
+        return $this->enrolledClasses;
+    }
+
+    public function addEnrolledClass(StudentClass $enrollment): static
+    {
+        if (!$this->enrolledClasses->contains($enrollment)) {
+            $this->enrolledClasses->add($enrollment);
+            $enrollment->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrolledClass(StudentClass $enrollment): static
+    {
+        if ($this->enrolledClasses->removeElement($enrollment)) {
+            // Not setting null because the entity has a composite primary key
         }
 
         return $this;

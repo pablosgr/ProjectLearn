@@ -42,10 +42,24 @@ class Test
     #[ORM\OneToMany(targetEntity: TestResult::class, mappedBy: 'test')]
     private Collection $testResults;
 
+    /**
+     * @var Collection<int, TestAssignment>
+     */
+    #[ORM\OneToMany(targetEntity: TestAssignment::class, mappedBy: 'test', orphanRemoval: true)]
+    private Collection $classAssignments;
+
+    /**
+     * @var Collection<int, TestTag>
+     */
+    #[ORM\OneToMany(targetEntity: TestTag::class, mappedBy: 'test', orphanRemoval: true)]
+    private Collection $tagRelations;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
         $this->testResults = new ArrayCollection();
+        $this->classAssignments = new ArrayCollection();
+        $this->tagRelations = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -155,6 +169,60 @@ class Test
             if ($testResult->getTest() === $this) {
                 $testResult->setTest(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TestAssignment>
+     */
+    public function getClassAssignments(): Collection
+    {
+        return $this->classAssignments;
+    }
+
+    public function addClassAssignment(TestAssignment $testAssignment): static
+    {
+        if (!$this->classAssignments->contains($testAssignment)) {
+            $this->classAssignments->add($testAssignment);
+            $testAssignment->setTest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClassAssignment(TestAssignment $testAssignment): static
+    {
+        if ($this->classAssignments->removeElement($testAssignment)) {
+            // Not setting null because the entity has a composite primary key
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TestTag>
+     */
+    public function getTagRelations(): Collection
+    {
+        return $this->tagRelations;
+    }
+
+    public function addTagRelation(TestTag $testTag): static
+    {
+        if (!$this->tagRelations->contains($testTag)) {
+            $this->tagRelations->add($testTag);
+            $testTag->setTest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTagRelation(TestTag $testTag): static
+    {
+        if ($this->tagRelations->removeElement($testTag)) {
+            // Not setting null because the entity has a composite primary key
         }
 
         return $this;
