@@ -31,10 +31,17 @@ class Classroom
      */
     #[ORM\OneToMany(targetEntity: Unit::class, mappedBy: 'classroom')]
     private Collection $units;
+
+    /**
+     * @var Collection<int, TestResult>
+     */
+    #[ORM\OneToMany(targetEntity: TestResult::class, mappedBy: 'classroom')]
+    private Collection $testResults;
     
     public function __construct()
     {
         $this->units = new ArrayCollection();
+        $this->testResults = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -101,6 +108,36 @@ class Classroom
             // set the owning side to null (unless already changed)
             if ($unit->getClassroom() === $this) {
                 $unit->setClassroom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TestResult>
+     */
+    public function getTestResults(): Collection
+    {
+        return $this->testResults;
+    }
+
+    public function addTestResult(TestResult $testResult): static
+    {
+        if (!$this->testResults->contains($testResult)) {
+            $this->testResults->add($testResult);
+            $testResult->setClassroom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTestResult(TestResult $testResult): static
+    {
+        if ($this->testResults->removeElement($testResult)) {
+            // set the owning side to null (unless already changed)
+            if ($testResult->getClassroom() === $this) {
+                $testResult->setClassroom(null);
             }
         }
 

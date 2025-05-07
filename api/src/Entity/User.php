@@ -53,6 +53,12 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Test::class, mappedBy: 'author')]
     private Collection $created_tests;
 
+    /**
+     * @var Collection<int, TestResult>
+     */
+    #[ORM\OneToMany(targetEntity: TestResult::class, mappedBy: 'student')]
+    private Collection $testResults;
+
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
@@ -64,6 +70,7 @@ class User implements PasswordAuthenticatedUserInterface
         $this->id = Uuid::v4()->toRfc4122();
         $this->taught_classrooms = new ArrayCollection();
         $this->created_tests = new ArrayCollection();
+        $this->testResults = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -209,6 +216,36 @@ class User implements PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($createdTest->getAuthor() === $this) {
                 $createdTest->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TestResult>
+     */
+    public function getTestResults(): Collection
+    {
+        return $this->testResults;
+    }
+
+    public function addTestResult(TestResult $testResult): static
+    {
+        if (!$this->testResults->contains($testResult)) {
+            $this->testResults->add($testResult);
+            $testResult->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTestResult(TestResult $testResult): static
+    {
+        if ($this->testResults->removeElement($testResult)) {
+            // set the owning side to null (unless already changed)
+            if ($testResult->getStudent() === $this) {
+                $testResult->setStudent(null);
             }
         }
 

@@ -36,9 +36,16 @@ class Test
     #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'test', orphanRemoval: true)]
     private Collection $questions;
 
+    /**
+     * @var Collection<int, TestResult>
+     */
+    #[ORM\OneToMany(targetEntity: TestResult::class, mappedBy: 'test')]
+    private Collection $testResults;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
+        $this->testResults = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -117,6 +124,36 @@ class Test
             // set the owning side to null (unless already changed)
             if ($question->getTest() === $this) {
                 $question->setTest(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TestResult>
+     */
+    public function getTestResults(): Collection
+    {
+        return $this->testResults;
+    }
+
+    public function addTestResult(TestResult $testResult): static
+    {
+        if (!$this->testResults->contains($testResult)) {
+            $this->testResults->add($testResult);
+            $testResult->setTest($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTestResult(TestResult $testResult): static
+    {
+        if ($this->testResults->removeElement($testResult)) {
+            // set the owning side to null (unless already changed)
+            if ($testResult->getTest() === $this) {
+                $testResult->setTest(null);
             }
         }
 
