@@ -2,7 +2,6 @@ import { Route, Routes } from 'react-router'
 import Layout from './Layout'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
-import './App.css'
 
 function App() {
   return (
