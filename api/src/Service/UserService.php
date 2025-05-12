@@ -240,4 +240,39 @@ class UserService
             'status' => Response::HTTP_OK
         ];
     }
+
+
+    public function loginUser(array $data): array
+    {
+        if (empty($data['username']) || empty($data['password'])) {
+            return [
+                'body' => ['error' => 'Username and password are required'],
+                'status' => Response::HTTP_BAD_REQUEST
+            ];
+        }
+
+        // Find user by username
+        $user = $this->userRepository->findOneBy(['username' => $data['username']]);
+        
+        if (!$user || !$this->passwordHasher->isPasswordValid($user, $data['password'])) {
+            return [
+                'body' => ['error' => 'Invalid credentials'],
+                'status' => Response::HTTP_UNAUTHORIZED
+            ];
+        }
+
+        return [
+            'body' => [
+                'message' => 'Login successful',
+                'user' => [
+                    'id' => $user->getId(),
+                    'name' => $user->getName(),
+                    'username' => $user->getUsername(),
+                    'email' => $user->getEmail(),
+                    'role' => $user->getRole()->value,
+                ]
+            ],
+            'status' => Response::HTTP_OK
+        ];
+    }
 }

@@ -148,7 +148,7 @@ final class UserController extends AbstractController{
             type: 'array',
             items: new OA\Items(
                 properties: [
-                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                    new OA\Property(property: 'id', type: 'integer', example: 'b39da7a7-01cc-4e2c-b561-41cff468d472'),
                     new OA\Property(property: 'name', type: 'string', example: 'John Doe'),
                     new OA\Property(property: 'username', type: 'string', example: 'johndoe'),
                     new OA\Property(property: 'email', type: 'string', example: 'john@example.com'),
@@ -216,5 +216,55 @@ final class UserController extends AbstractController{
         $result  = $userService -> listUsersByParam($param, $query_value);
 
         return $this -> json($result['body'], $result['status']);
+    }
+
+
+    #[Route('/login', name: 'user_login', methods: ['POST'])]
+    #[OA\Post(summary: 'Login a user')]
+    #[OA\RequestBody(
+        description: 'User login credentials',
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'username', type: 'string', example: 'johndoe'),
+                new OA\Property(property: 'password', type: 'string', example: 'securepassword')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Login successful',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'message', type: 'string', example: 'Login successful'),
+                new OA\Property(property: 'user', type: 'object', properties: [
+                    new OA\Property(property: 'id', type: 'string', example: 'b39da7a7-01cc-4e2c-b561-41cff468d472'),
+                    new OA\Property(property: 'name', type: 'string', example: 'John Doe'),
+                    new OA\Property(property: 'username', type: 'string', example: 'johndoe'),
+                    new OA\Property(property: 'email', type: 'string', example: 'john@example.com'),
+                    new OA\Property(property: 'role', type: 'string', example: 'TEACHER')
+                ])
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Invalid credentials'
+    )]
+    #[OA\Response(
+        response: 400,
+        description: 'Invalid input'
+    )]
+    public function user_login(
+        Request $request, 
+        UserService $userService
+    ): JsonResponse
+    {
+        $body = $request->getContent();
+        $data = json_decode($body, true);
+
+        $result = $userService->loginUser($data);
+
+        return $this->json($result['body'], $result['status']);
     }
 }
