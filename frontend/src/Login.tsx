@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
+import { useNavigate } from 'react-router';
 
 export default function Login() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,8 +32,7 @@ export default function Login() {
       console.log('Login successful:', data);
       setUsername('');
       setPassword('');
-      
-      // Redirect user to home page
+      navigate('/home');
       
     } catch (err) {
       setError('Invalid credentials');
