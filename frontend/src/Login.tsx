@@ -15,8 +15,9 @@ export default function Login() {
     setLoading(true);
     
     try {
-      const response = await fetch('http://localhost/track-learn/php_scripts/user/user_login.php', {
+      const response = await fetch('/php/user/user_login.php', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },

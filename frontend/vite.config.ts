@@ -8,4 +8,16 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-})
+  server: {
+    proxy: {
+      '/php': {
+        target: 'http://localhost',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+        cookieDomainRewrite: '',
+        rewrite: path => path.replace(/^\/php/, '/track-learn/php_scripts')
+      }
+    }
+  }
+});

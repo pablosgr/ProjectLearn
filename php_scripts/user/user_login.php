@@ -10,7 +10,7 @@ $data = json_decode($json, true);
 $api_response = callApi('POST', 'user/login', $data);
 $response_data = json_decode($api_response, true);
 
-if (isset($data['user'])) {
+if (isset($response_data['message']) && $response_data['message'] === 'Login successful') {
     $_SESSION["id"] = $response_data['user']['id'];
     $_SESSION["name"] = $response_data['user']['name'];
     $_SESSION["username"] = $response_data['user']['username'];

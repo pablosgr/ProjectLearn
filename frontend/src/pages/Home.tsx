@@ -6,16 +6,18 @@ export default function Home() {
 
     useEffect(() => {
         const fetchApiData = async () => {
-        try {
-            const response = await fetch('http://localhost/track-learn/php_scripts/user/user.php');
-            const data = await response.json();
-            console.log(data);
-            if (data) {
-            setUser(data.users[0].name);
+            try {
+                const response = await fetch('/php/user/user.php', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                console.log(data);
+                if (data) {
+                setUser(data.users[0].name);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
             }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
         }
 
         fetchApiData();
