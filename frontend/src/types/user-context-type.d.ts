@@ -1,9 +1,9 @@
 export interface UserData {
-  id: string;
-  name: string;
-  username: string;
-  email: string;
-  role: string;
+  id: string | null;
+  name: string | null;
+  username: string | null;
+  email: string | null;
+  role: string | null;
 }
 
 export interface UserContextType {

@@ -6,8 +6,7 @@ import { useUserData } from './context/UserContext.tsx';
 export default function Layout() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const { userData } = useUserData();
+  const { userData, isLogged, setUserData, setIsLogged } = useUserData();
 
   const logout = async () => {
     try {
@@ -27,6 +26,14 @@ export default function Layout() {
   }
 
   const handleLogout = () => {
+    setIsLogged(false);
+    setUserData({
+      id: null,
+      name: null,
+      username: null,
+      email: null,
+      role: null
+    });
     logout();
   }
 
@@ -39,10 +46,10 @@ export default function Layout() {
           throw new Error('Session is invalid');
         }
 
-        setIsAuthenticated(true);
+        setIsLogged(true);
       } catch (error) {
         console.error('Error validating session:', error);
-        setIsAuthenticated(false);
+        setIsLogged(false);
         setTimeout(() => {
           navigate('/login', { replace: true });
         }, 3000);
@@ -59,7 +66,7 @@ export default function Layout() {
     return <div>Loading...</div>;
   }
 
-  if (!isAuthenticated) {
+  if (!isLogged) {
     return <div>
       <p>Please authenticate, redirecting to login..</p>
     </div>;
