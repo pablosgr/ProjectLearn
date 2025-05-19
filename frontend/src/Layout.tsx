@@ -54,6 +54,12 @@ export default function Layout() {
         <nav className='w-full'>
           <ul className='flex flex-row gap-8 justify-end'>
             <Link to="/home"><li>Inicio</li></Link>
+            {
+              userData?.role === 'teacher' && (
+                <Link to="/test"><li>Tests</li></Link>
+              )
+            }
+            <Link to="/classroom"><li>Classrooms</li></Link>
             <Link to="/profile"><li>Perfil</li></Link>
             <li onClick={handleLogout}>Salir</li>
             {/* NavLink for conditional rendering */}
