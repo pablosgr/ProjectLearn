@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router';
+import { useUserData } from '../context/UserContext.tsx';
 
 export default function Login() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const { setUserData, setIsLogged } = useUserData();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -30,9 +32,18 @@ export default function Login() {
         throw new Error(data.error || 'Login failed');
       }
       
-      console.log('Login successful:', data);
       setUsername('');
       setPassword('');
+
+      setIsLogged(true);
+      setUserData({
+        id: data.user.id,
+        name: data.user.name,
+        username: data.user.username,
+        email: data.user.email,
+        role: data.user.role,
+      });
+
       navigate('/home');
       
     } catch (err) {
@@ -49,6 +60,7 @@ export default function Login() {
       <form 
         className="
           flex flex-col gap-3
+          max-w-[400px]
           rounded-2xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.8)] 
           shadow-neutral-900 bg-neutral-700
         "

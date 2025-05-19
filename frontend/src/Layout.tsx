@@ -1,11 +1,13 @@
 import { Outlet, Link, useNavigate } from 'react-router'
 import validateSession from './utils/auth_helper';
 import { useEffect, useState } from 'react';
+import { useUserData } from './context/UserContext.tsx';
 
 export default function Layout() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const { userData } = useUserData();
 
   const logout = async () => {
     try {
@@ -41,7 +43,10 @@ export default function Layout() {
       } catch (error) {
         console.error('Error validating session:', error);
         setIsAuthenticated(false);
-        // navigate('/login', { replace: true });
+        setTimeout(() => {
+          navigate('/login', { replace: true });
+        }, 3000);
+        
       } finally {
         setIsLoading(false);
       }
@@ -55,23 +60,28 @@ export default function Layout() {
   }
 
   if (!isAuthenticated) {
-    return <div><p>Please authenticate again</p></div>;
+    return <div>
+      <p>Please authenticate, redirecting to login..</p>
+    </div>;
   }
 
   return (
-    <div>
-      <header>
-        <nav>
-          <Link to="/home"><button>Inicio</button></Link>
-          <Link to="/profile"><button>Perfil</button></Link>
-          <button onClick={handleLogout}>Salir</button>
-          {/* NavLink for conditional rendering */}
+    <>
+      <header className='h-[80px] w-full bg-neutral-500 flex items-center justify-between p-5'>
+        <p className='w-[150px]'>Welcome, {userData?.username}</p>
+        <nav className='w-full'>
+          <ul className='flex flex-row gap-8 justify-end'>
+            <Link to="/home"><li>Inicio</li></Link>
+            <Link to="/profile"><li>Perfil</li></Link>
+            <li onClick={handleLogout}>Salir</li>
+            {/* NavLink for conditional rendering */}
+          </ul>
         </nav>
       </header>
 
       <main>
         <Outlet /> {/* This renders the children pages */}
       </main>
-    </div>
+    </>
   )
 }

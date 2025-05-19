@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router'
 import Layout from './Layout'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
-import Login from './Login'
+import Login from './pages/Login'
 
 function App() {
   return (
