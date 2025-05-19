@@ -41,10 +41,6 @@ export default function Layout() {
     checkSession();
   }, [checkSession]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   if (!isLogged) {
     return <div>
       <p>Please authenticate, redirecting to login..</p>
@@ -66,7 +62,18 @@ export default function Layout() {
       </header>
 
       <main>
-        <Outlet /> {/* This renders the children pages */}
+        {
+          isLoading && (
+            <div>
+              <p>Loading...</p>
+            </div>
+          )
+        }
+        {
+          !isLoading && (
+            <Outlet />
+          )
+        }
       </main>
     </>
   )
