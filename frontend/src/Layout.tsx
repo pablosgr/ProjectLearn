@@ -1,12 +1,12 @@
 import { Outlet, Link, useNavigate } from 'react-router'
-import validateSession from './utils/auth_helper';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useUserData } from './context/UserContext.tsx';
+import { useValidateSession } from './hooks/UseValidateSession.tsx';
 
 export default function Layout() {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
   const { userData, isLogged, setUserData, setIsLogged } = useUserData();
+  const { isLoading, checkSession } = useValidateSession();
 
   const logout = async () => {
     try {
@@ -38,29 +38,8 @@ export default function Layout() {
   }
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const isValid = await validateSession();
-        
-        if (!isValid) {
-          throw new Error('Session is invalid');
-        }
-
-        setIsLogged(true);
-      } catch (error) {
-        console.error('Error validating session:', error);
-        setIsLogged(false);
-        setTimeout(() => {
-          navigate('/login', { replace: true });
-        }, 3000);
-        
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
     checkSession();
-  }, [navigate]);
+  }, [checkSession]);
 
   if (isLoading) {
     return <div>Loading...</div>;
