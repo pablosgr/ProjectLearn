@@ -165,15 +165,14 @@ class StudentClassService
             $teacher = $classroom->getTeacher();
             
             $classrooms[] = [
-                'id' => $classroom->getId(),
+                'id' => (string)$classroom->getId(),
                 'name' => $classroom->getName(),
-                'description' => $classroom->getDescription(),
                 'teacher' => [
                     'id' => $teacher->getId(),
                     'name' => $teacher->getName()
                 ],
                 'created_at' => $classroom->getCreatedAt()->format('Y-m-d H:i:s'),
-                'enrollment_id' => $enrollment->getId()
+                'enrollment_id' => $classroom->getId() . '-' . $student->getId()
             ];
         }
 
