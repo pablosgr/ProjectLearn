@@ -46,8 +46,7 @@ class StudentClassService
                 'status' => Response::HTTP_NOT_FOUND
             ];
         }
-
-        // Check if enrollment already exists
+        
         $existingEnrollment = $this->studentClassRepository->findOneBy([
             'classroom' => $classroom,
             'student' => $student
@@ -144,6 +143,42 @@ class StudentClassService
 
         return [
             'body' => $students,
+            'status' => Response::HTTP_OK
+        ];
+    }
+
+    public function getStudentEnrollments(string $studentId): array
+    {
+        $student = $this->userRepository->find($studentId);
+        if (!$student || $student->getRole() !== UserRole::STUDENT) {
+            return [
+                'body' => ['error' => 'Student not found'],
+                'status' => Response::HTTP_NOT_FOUND
+            ];
+        }
+
+        $enrollments = $this->studentClassRepository->findBy(['student' => $student]);
+        
+        $classrooms = [];
+        foreach ($enrollments as $enrollment) {
+            $classroom = $enrollment->getClassroom();
+            $teacher = $classroom->getTeacher();
+            
+            $classrooms[] = [
+                'id' => $classroom->getId(),
+                'name' => $classroom->getName(),
+                'description' => $classroom->getDescription(),
+                'teacher' => [
+                    'id' => $teacher->getId(),
+                    'name' => $teacher->getName()
+                ],
+                'created_at' => $classroom->getCreatedAt()->format('Y-m-d H:i:s'),
+                'enrollment_id' => $enrollment->getId()
+            ];
+        }
+
+        return [
+            'body' => $classrooms,
             'status' => Response::HTTP_OK
         ];
     }
