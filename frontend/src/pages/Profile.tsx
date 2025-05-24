@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useUserData } from '../context/UserContext';
 import Button from '../components/ui/Button';
@@ -8,13 +8,42 @@ import ProfileField from '../components/profile/ProfileField';
 import EditableField from '../components/profile/EditableField';
 
 export default function Profile() {
-  const { userData } = useUserData();
+  const { userData, setUserData } = useUserData();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: userData?.name || '',
     username: userData?.username || ''
   });
+  const [errors, setErrors] = useState({
+    name: '',
+    username: ''
+  });
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    validateForm();
+  }, [formData]);
+
+  const validateForm = () => {
+    const newErrors = {
+      name: '',
+      username: ''
+    };
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'This field cannot be empty';
+    } else if (formData.name.length > 70) {
+      newErrors.name = 'Name must be 70 characters or less';
+    }
+
+    if (!formData.username.trim()) {
+      newErrors.username = 'This field cannot be empty';
+    } else if (formData.username.length > 15) {
+      newErrors.username = 'Username must be 15 characters or less';
+    }
+    
+    setErrors(newErrors);
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,18 +51,52 @@ export default function Profile() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    if (errors.name || errors.username) {
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
-      await new Promise(r => setTimeout(r, 1000));
+      const response = await fetch('/php/user/user_edit_data.php', {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: formData.name, username: formData.username }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response failed');
+      }
+
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      if (data.message) {
+        if (userData) {
+            setUserData({
+                ...userData,
+                name: formData.name,
+                username: formData.username
+            });
+        }
+    }
       
       setIsEditing(false);
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error('Error in petition:', error);
     } finally {
       setIsLoading(false);
+      setIsEditing(false);
     }
   };
+
+  const hasErrors = !!errors.name || !!errors.username;
 
   return (
     <>
@@ -45,19 +108,25 @@ export default function Profile() {
         {isEditing ? (
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
-              <EditableField 
-                id="name"
-                label="Name"
-                value={formData.name}
-                onChange={handleChange}
-              />
+                <EditableField 
+                  id="name"
+                  label="Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+                {errors.name && (
+                  <p className="mt-1 text-sm text-red-800">{errors.name}</p>
+                )}
               
-              <EditableField 
-                id="username"
-                label="Username"
-                value={formData.username}
-                onChange={handleChange}
-              />
+                <EditableField 
+                  id="username"
+                  label="Username"
+                  value={formData.username}
+                  onChange={handleChange}
+                />
+                {errors.username && (
+                  <p className="mt-1 text-sm text-red-800">{errors.username}</p>
+                )}
             </div>
             
             <div className="mt-8 flex justify-end gap-4">
@@ -71,7 +140,7 @@ export default function Profile() {
                 type="submit" 
                 variant="primary"
                 isLoading={isLoading}
-                disabled={isLoading}
+                disabled={isLoading || hasErrors}
               >
                 Save Changes
               </Button>
