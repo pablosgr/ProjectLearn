@@ -4,6 +4,7 @@ import type { StudentClassroomsResponse } from '../types/student-classrooms-type
 
 export default function Classroom() {
   const { userData } = useUserData();
+  const [isLoading, setIsLoading] = useState(true);
   const [studentClassrooms, setStudentClassrooms] = useState<StudentClassroomsResponse | null>(null);
 
   const getStudentClasses = async () => {
@@ -20,6 +21,7 @@ export default function Classroom() {
 
       const data = await response.json();
       setStudentClassrooms(data);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching student classes:', error);
     }
@@ -55,15 +57,25 @@ export default function Classroom() {
   }, [userData]);
 
   return (
-    <div>
+    <>
       <h1>Classrooms</h1>
-      {studentClassrooms && (
-        <ul>
-          {studentClassrooms.map((classroom) => (
-            <li key={classroom.id}>{classroom.name}</li>
-          ))}
-        </ul>
+      {isLoading ? (
+        <div className="loading-state">
+          <p>Loading classrooms...</p>
+        </div>
+      ) : (
+        <div className="classrooms-content">
+          {studentClassrooms && studentClassrooms.length > 0 ? (
+            <ul>
+              {studentClassrooms.map((classroom) => (
+                <li key={classroom.id}>{classroom.name}</li>
+              ))}
+            </ul>
+          ) : (
+            <p>No classrooms found.</p>
+          )}
+        </div>
       )}
-    </div>
+    </>
   )
 }

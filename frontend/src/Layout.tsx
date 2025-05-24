@@ -70,14 +70,16 @@ export default function Layout() {
       <main>
         {
           isLoading && (
-            <div>
-              <p>Loading...</p>
+            <div className='px-30 pt-10'>
+              <p>Authenticating..</p>
             </div>
           )
         }
         {
           !isLoading && (
-            <Outlet />
+            <div className='px-30 pt-10'>
+              <Outlet />
+            </div>
           )
         }
       </main>

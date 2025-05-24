@@ -22,9 +22,9 @@ export default function Test() {
     }
 
     return (
-        <div>
-        <h1>Tests</h1>
-        <p>This is the tests page. You have to be a teacher to be here.</p>
-        </div>
+        <>
+            <h1>Tests</h1>
+            <p>This is the tests page. You have to be a teacher to be here.</p>
+        </>
     )
 }
