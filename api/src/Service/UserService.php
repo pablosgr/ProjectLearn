@@ -149,6 +149,16 @@ class UserService
             }
         }
 
+        if ($data['username'] !== $user->getUsername()) {
+            $existingUser = $this->userRepository->findOneBy(['username' => $data['username']]);
+            if ($existingUser) {
+                return [
+                    'body' => ['error' => 'Username already in use'],
+                    'status' => Response::HTTP_CONFLICT
+                ];
+            }
+        }
+
         $user->setName($data['name']);
         $user->setUsername($data['username']);
 
