@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useUserData } from '../context/UserContext.tsx';
 import type { StudentClassroomsResponse } from '../types/student-classrooms-type';
+import ClassroomCard from '../components/classroom/ClassroomCard.tsx';
 
 export default function Classroom() {
   const { userData } = useUserData();
@@ -57,25 +58,27 @@ export default function Classroom() {
   }, [userData]);
 
   return (
-    <>
-      <h1>Classrooms</h1>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8">My Classrooms</h1>
       {isLoading ? (
-        <div className="loading-state">
-          <p>Loading classrooms...</p>
+        <div className="flex justify-center items-center">
+          <p className="text-gray-600">Loading classrooms...</p>
         </div>
       ) : (
-        <div className="classrooms-content">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {studentClassrooms && studentClassrooms.length > 0 ? (
-            <ul>
-              {studentClassrooms.map((classroom) => (
-                <li key={classroom.id}>{classroom.name}</li>
-              ))}
-            </ul>
+            studentClassrooms.map((classroom) => (
+              <ClassroomCard
+                key={classroom.id}
+                name={classroom.name}
+                teacherUsername={classroom.teacher.name}
+              />
+            ))
           ) : (
-            <p>No classrooms found.</p>
+            <p className="text-gray-600">No classrooms found.</p>
           )}
         </div>
       )}
-    </>
-  )
+    </div>
+  );
 }

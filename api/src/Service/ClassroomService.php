@@ -121,6 +121,8 @@ class ClassroomService
                 'id' => $classroom->getId(),
                 'name' => $classroom->getName(),
                 'teacher_id' => $classroom->getTeacher()->getId(),
+                'teacher_name' => $classroom->getTeacher()->getName(),
+                'teacher_username' => $classroom->getTeacher()->getUsername(),
                 'created_at' => $classroom->getCreatedAt()->format('Y-m-d H:i:s'),
             ];
         }
@@ -163,6 +165,8 @@ class ClassroomService
             $classroomList[] = [
                 'id' => $classroom->getId(),
                 'teacher_id' => $classroom->getTeacher()->getId(),
+                'teacher_name' => $classroom->getTeacher()->getName(),
+                'teacher_username' => $classroom->getTeacher()->getUsername(),
                 'name' => $classroom->getName(),
                 'created_at' => $classroom->getCreatedAt()->format('Y-m-d H:i:s'),
             ];
