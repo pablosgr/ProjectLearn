@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import ClassroomTests from '../components/classroom/ClassroomTests';
+import ClassroomStudents from '../components/classroom/ClassroomStudents';
 
 interface ClassroomDetail {
   id: string;
@@ -10,9 +12,12 @@ interface ClassroomDetail {
   created_at: string;
 }
 
+type Tab = 'tests' | 'students';
+
 export default function ClassroomDetail() {
   const { id } = useParams<{ id: string }>();
   const [classroom, setClassroom] = useState<ClassroomDetail | null>(null);
+  const [activeTab, setActiveTab] = useState<Tab>('tests');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,18 +91,38 @@ export default function ClassroomDetail() {
           </div>
           
           <nav className="flex gap-8 text-sm font-medium">
-            <button className="py-4 border-b-2 border-white text-white">Tests</button>
-            <button className="py-4 text-white/75 hover:text-white">Students</button>
+            <button 
+              onClick={() => setActiveTab('tests')}
+              className={`py-4 ${
+                activeTab === 'tests'
+                  ? 'border-b-2 border-white text-white'
+                  : 'text-white/75 hover:text-white'
+              }`}
+            >
+              Tests
+            </button>
+            <button 
+              onClick={() => setActiveTab('students')}
+              className={`py-4 ${
+                activeTab === 'students'
+                  ? 'border-b-2 border-white text-white'
+                  : 'text-white/75 hover:text-white'
+              }`}
+            >
+              Students
+            </button>
           </nav>
         </section>
       </header>
 
       <section className="max-w-7xl mx-auto px-6 py-8">
-        <article className="bg-white rounded-lg shadow-sm p-6">
-          <p className="text-gray-500 text-center py-12">
-            Class content will be displayed here
-          </p>
-        </article>
+        {
+            activeTab === 'tests' ? (
+                <ClassroomTests />
+            ) : (
+                <ClassroomStudents />
+            )
+        }
       </section>
     </main>
   );
