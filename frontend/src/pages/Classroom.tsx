@@ -11,7 +11,7 @@ export default function Classroom() {
   const getStudentClasses = async () => {
     console.log('Fetching student classes...');
     try {
-      const response = await fetch('/php/user/student_get_classrooms.php', {
+      const response = await fetch('/php/classroom/student_get_classrooms.php', {
         method: 'GET',
         credentials: 'include'
       });
@@ -65,11 +65,12 @@ export default function Classroom() {
           <p className="text-gray-600">Loading classrooms...</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="flex flex-row gap-6">
           {studentClassrooms && studentClassrooms.length > 0 ? (
             studentClassrooms.map((classroom) => (
               <ClassroomCard
                 key={classroom.id}
+                id={classroom.id}
                 name={classroom.name}
                 teacherUsername={classroom.teacher.name}
               />

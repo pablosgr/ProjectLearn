@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
 import Classroom from './pages/Classroom'
+import ClassroomDetail from './pages/ClassroomDetail'
 import Test from './pages/Test'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path='/profile' element={<Profile />}/>
             <Route path='/test' element={<Test />} />
             <Route path='/classroom' element={<Classroom />} />
+            <Route path="/classroom/:id" element={<ClassroomDetail />} />
           </Route>
         </Routes>
     </>

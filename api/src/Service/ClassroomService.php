@@ -173,7 +173,7 @@ class ClassroomService
         }
 
         return [
-            'body' => ['users' => $classroomList],
+            'body' => ['classrooms' => $classroomList],
             'status' => Response::HTTP_OK
         ];
     }
