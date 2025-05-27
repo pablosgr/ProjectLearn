@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { useUserData } from '../context/UserContext';
 import ClassroomTests from '../components/classroom/ClassroomTests';
 import ClassroomStudents from '../components/classroom/ClassroomStudents';
+import ClassroomSettings from '../components/classroom/ClassroomSettings';
 
 interface ClassroomDetail {
   id: string;
@@ -12,10 +14,11 @@ interface ClassroomDetail {
   created_at: string;
 }
 
-type Tab = 'tests' | 'students';
+type Tab = 'tests' | 'students' | 'settings';
 
 export default function ClassroomDetail() {
   const { id } = useParams<{ id: string }>();
+  const { userData } = useUserData();
   const [classroom, setClassroom] = useState<ClassroomDetail | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('tests');
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +56,10 @@ export default function ClassroomDetail() {
 
     fetchClassroomDetails();
   }, [id]);
+
+  const handleClassUpdate = (newName: string) => {
+    setClassroom(prev => prev ? { ...prev, name: newName } : null);
+  };
 
   if (isLoading) {
     return (
@@ -111,18 +118,34 @@ export default function ClassroomDetail() {
             >
               Students
             </button>
+            {userData?.role === 'teacher' && (
+              <button 
+                onClick={() => setActiveTab('settings')}
+                className={`py-4 ${
+                  activeTab === 'settings'
+                    ? 'border-b-2 border-white text-white'
+                    : 'text-white/75 hover:text-white'
+                }`}
+              >
+                Settings ⚙️
+              </button>
+            )}
           </nav>
         </section>
       </header>
 
       <section className="max-w-7xl mx-auto px-6 py-8">
-        {
-            activeTab === 'tests' ? (
-                <ClassroomTests />
-            ) : (
-                <ClassroomStudents />
-            )
-        }
+        {activeTab === 'tests' ? (
+          <ClassroomTests />
+        ) : activeTab === 'students' ? (
+          <ClassroomStudents />
+        ) : (
+          userData?.role === 'teacher' && 
+          <ClassroomSettings 
+            currentName={classroom.name} 
+            onUpdate={handleClassUpdate}
+          />
+        )}
       </section>
     </main>
   );
