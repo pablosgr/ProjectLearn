@@ -2,13 +2,47 @@ import type { FC } from 'react';
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import type { UserData } from '../../types/user-context-type';
-import StudentCard from './StudentCard.tsx';
+import StudentListCard from './StudentListCard.tsx';
 
 const ClassroomStudents: FC = () => {
   const { id } = useParams<{ id: string }>();
   const [students, setStudents] = useState<UserData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const handleStudentDelete = async (studentId: string) => {
+    try {
+      const response = await fetch('/php/classroom/remove_classroom_student.php', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          classroom_id: id,
+          student_id: studentId
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to remove student');
+      }
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Update UI after successful API call
+      setStudents(prevStudents => 
+        prevStudents.filter(student => student.id !== studentId)
+      );
+    } catch (err) {
+      console.error('Error removing student:', err);
+      // Show error message to user
+    }
+  };
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -74,7 +108,11 @@ const ClassroomStudents: FC = () => {
       {students.length > 0 ? (
         <ul className="divide-y divide-gray-100">
           {students.map(student => (
-            <StudentCard key={student.id} student={student} />
+            <StudentListCard
+              key={student.id}
+              student={student}
+              onDelete={handleStudentDelete} 
+            />
           ))}
         </ul>
       ) : (
