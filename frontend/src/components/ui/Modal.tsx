@@ -34,7 +34,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, onConfirm, title, children }) 
             onClick={onConfirm}
             className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
-            Delete
+            Accept
           </button>
         </footer>
       </article>
