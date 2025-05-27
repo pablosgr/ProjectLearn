@@ -63,6 +63,14 @@ export default function Classroom() {
     }
   }, [userData]);
 
+  const handleClassroomDelete = (deletedId: string) => {
+    if (teacherClassrooms) {
+      setTeacherClassrooms(prevClassrooms => 
+        prevClassrooms && prevClassrooms.filter(classroom => classroom.id !== deletedId)
+      );
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">My Classrooms</h1>
@@ -81,6 +89,7 @@ export default function Classroom() {
                     id={classroom.id}
                     name={classroom.name}
                     teacherUsername={classroom.teacher_name}
+                    onDelete={handleClassroomDelete}
                   />
                 ))}
             </section>
