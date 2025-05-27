@@ -136,7 +136,7 @@ class ClassroomService
 
     public function listClassroomsByParam(string $param, ?string $query_value = null): array
     {
-        $paramOptions = ['id', 'name', 'teacher_id'];
+        $paramOptions = ['id', 'name', 'teacher'];
 
         if (empty($param) || !in_array($param, $paramOptions)) {
             return [
