@@ -5,6 +5,7 @@ import Profile from './pages/Profile'
 import Login from './pages/Login'
 import Classroom from './pages/Classroom'
 import ClassroomDetail from './pages/ClassroomDetail'
+import EnrollClassroom from './pages/EnrollClassroom';
 import Test from './pages/Test'
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
             <Route path='/test' element={<Test />} />
             <Route path='/classroom' element={<Classroom />} />
             <Route path="/classroom/:id" element={<ClassroomDetail />} />
+            <Route path="/enroll/:id" element={<EnrollClassroom />} />
           </Route>
         </Routes>
     </>

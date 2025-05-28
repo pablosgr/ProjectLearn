@@ -99,7 +99,7 @@ const ClassroomStudents: FC = () => {
   return (
     <article className="bg-white rounded-lg shadow-sm p-6">
       <header className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-medium">Students</h2>
+        <h2 className="text-xl text-neutral-900 font-medium">Students</h2>
         <span className="text-sm text-gray-500">
           {students.length} {students.length === 1 ? 'student' : 'students'} enrolled
         </span>
