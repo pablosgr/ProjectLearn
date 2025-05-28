@@ -3,6 +3,7 @@ import Layout from './Layout'
 import Home from './pages/Home'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
+import Register from './pages/Register'
 import Classroom from './pages/Classroom'
 import ClassroomDetail from './pages/ClassroomDetail'
 import EnrollClassroom from './pages/EnrollClassroom';
@@ -13,6 +14,7 @@ function App() {
     <>
         <Routes>
           <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
           <Route path='/' element={<Login />} />
           <Route element={<Layout />}>
             <Route path='/home' element={<Home />}/>

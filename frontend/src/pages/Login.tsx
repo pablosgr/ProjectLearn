@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { useUserData } from '../context/UserContext.tsx';
+import { Link } from 'react-router';
 
 export default function Login() {
   const [username, setUsername] = useState<string>('');
@@ -91,6 +92,15 @@ export default function Login() {
         >
           {loading ? 'Logging in...' : 'Login'}
         </button>
+        <p className="text-center text-neutral-400 text-sm mt-2">
+          Don't have an account?{' '}
+          <Link 
+            to="/register" 
+            className="text-cyan-400 hover:text-cyan-300 transition-colors"
+          >
+            Register here
+          </Link>
+        </p>
       </form>
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
