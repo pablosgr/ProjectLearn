@@ -74,7 +74,7 @@ const ClassroomSettings: FC<ClassroomSettingsProps> = ({ currentName, onUpdate }
             id="className"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border-1 border-neutral-400 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full p-2 border-1 bg-neutral-400 border-neutral-400 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
           />
         </div>
 
