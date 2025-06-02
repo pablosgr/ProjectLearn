@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useUserData } from "../context/UserContext";
-import type { Test } from '../types/test-type';
+import type { TestType } from '../types/test-type';
 import TestCard from '../components/test/TestCard';
 import CreateTestModal from '../components/test/CreateTestModal';
 
 export default function Test() {
     const { userData } = useUserData();
-    const [tests, setTests] = useState<Test[]>([]);
+    const [tests, setTests] = useState<TestType[]>([]);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 

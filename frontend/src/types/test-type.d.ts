@@ -1,4 +1,4 @@
-interface TestType {
+export interface ApiTestType {
   id: string;
   name: string;
   category: string;
@@ -7,7 +7,7 @@ interface TestType {
   created_at: string;
 }
 
-export interface Test extends TestType {
+export interface TestType extends ApiTestType {
   questions?: {
     id: string;
     question: string;

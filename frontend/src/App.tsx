@@ -9,6 +9,7 @@ import ClassroomDetail from './pages/ClassroomDetail'
 import EnrollClassroom from './pages/EnrollClassroom'
 import Test from './pages/Test'
 import Users from './pages/Users';
+import TestDetail from './pages/TestDetail'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path='/home' element={<Home />}/>
             <Route path='/profile' element={<Profile />}/>
             <Route path='/test' element={<Test />} />
+            <Route path='/test/:id' element={<TestDetail />} />
             <Route path='/classroom' element={<Classroom />} />
             <Route path="/classroom/:id" element={<ClassroomDetail />} />
             <Route path="/enroll/:id" element={<EnrollClassroom />} />
