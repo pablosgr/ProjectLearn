@@ -8,7 +8,7 @@ import Classroom from './pages/Classroom'
 import ClassroomDetail from './pages/ClassroomDetail'
 import EnrollClassroom from './pages/EnrollClassroom'
 import Test from './pages/Test'
-import Users from './pages/Users'
+import Users from './pages/Users';
 
 function App() {
   return (

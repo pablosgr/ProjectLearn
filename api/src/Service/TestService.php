@@ -60,7 +60,8 @@ class TestService
         return [
             'body' => [
                 'message' => 'Test registered successfully',
-                'test_name' => $test->getName()
+                'test_name' => $test->getName(),
+                'test_id' => $test->getId()
             ],
             'status' => Response::HTTP_CREATED
         ];
@@ -143,7 +144,8 @@ class TestService
                 'id' => $test->getId(),
                 'name' => $test->getName(),
                 'category' => $test->getCategory()->getName(),
-                'author' => $test->getAuthor()->getUsername(),
+                'author_name' => $test->getAuthor()->getName(),
+                'author_username' => $test->getAuthor()->getUsername(),
                 'created_at' => $test->getCreatedAt()->format('Y-m-d H:i:s')
             ];
         }
@@ -172,7 +174,7 @@ class TestService
             ];
         }
 
-        $test = $this->testRepository->findOneBy([$parameter => $query_value]);
+        $test = $this->testRepository->findBy([$parameter => $query_value]);
         if (!$test) {
             return [
                 'body' => ['error' => 'Test not found'],
@@ -180,14 +182,20 @@ class TestService
             ];
         }
 
+        $testsList = [];
+        foreach ($test as $t) {
+            $testsList[] = [
+                'id' => $t->getId(),
+                'name' => $t->getName(),
+                'category' => $t->getCategory()->getName(),
+                'author_name' => $t->getAuthor()->getName(),
+                'author_username' => $t->getAuthor()->getUsername(),
+                'created_at' => $t->getCreatedAt()->format('Y-m-d H:i:s')
+            ];
+        }
+        
         return [
-            'body' => [
-                'id' => $test->getId(),
-                'name' => $test->getName(),
-                'category' => $test->getCategory()->getName(),
-                'author' => $test->getAuthor()->getUsername(),
-                'created_at' => $test->getCreatedAt()->format('Y-m-d H:i:s')
-            ],
+            'body' => $testsList,
             'status' => Response::HTTP_OK
         ];
     }

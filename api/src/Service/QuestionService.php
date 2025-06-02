@@ -48,7 +48,10 @@ class QuestionService
         $this->entityManager->flush();
 
         return [
-            'body' => ['message' => 'Question created successfully'],
+            'body' => [
+                'message' => 'Question created successfully',
+                'id' => $question->getId()
+            ],
             'status' => Response::HTTP_CREATED
         ];
     }

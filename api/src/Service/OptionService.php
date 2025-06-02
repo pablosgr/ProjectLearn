@@ -48,7 +48,10 @@ class OptionService
         $this->entityManager->flush();
 
         return [
-            'body' => ['message' => 'Option created successfully'],
+            'body' => [
+                'message' => 'Option created successfully',
+                'id' => $option->getId()
+            ],
             'status' => Response::HTTP_CREATED
         ];
     }
