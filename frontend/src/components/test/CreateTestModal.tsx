@@ -55,6 +55,16 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
     }
   };
 
+  const removeQuestion = (indexToRemove: number) => {
+    setQuestions(questions.filter((_, index) => index !== indexToRemove));
+    // Also clear any errors for this question
+    setErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors.questions[indexToRemove];
+      return newErrors;
+    });
+  };
+
   const validateForm = () => {
     const newErrors = {
       testName: '',
@@ -274,7 +284,19 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
             </div>
             
             {questions.map((questionData, index) => (
-              <div key={index} className="border-b border-gray-200 pb-4 last:border-b-0">
+              <div key={index} className="relative border-b border-gray-200 pb-4 last:border-b-0">
+                <div className="flex justify-end mb-2">
+                  {questions.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeQuestion(index)}
+                      className="text-red-500 hover:text-red-700 text-sm font-medium"
+                      title="Remove question"
+                    >
+                      ❌ Remove Question
+                    </button>
+                  )}
+                </div>
                 <QuestionField 
                   questionNumber={index + 1}
                   questionData={questionData}
