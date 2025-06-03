@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useUserData } from '../../context/UserContext';
 import Modal from '../ui/Modal';
-import type { TestCardProps } from '../../types/test-type';
+import type { TestType } from '../../types/test-type';
 
-export default function TestCard({ test, onDelete }: TestCardProps) {
+export default function TestCard({ test, onDelete }: { test: TestType, onDelete?: (id: string) => Promise<void>; }) {
   const navigate = useNavigate();
   const { userData } = useUserData();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -13,7 +13,7 @@ export default function TestCard({ test, onDelete }: TestCardProps) {
   const handleDelete = async () => {
     try {
       if (onDelete) {
-        await onDelete(test.id);
+        await onDelete(test.id.toString());
       }
       setShowDeleteModal(false);
     } catch (error) {

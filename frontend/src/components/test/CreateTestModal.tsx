@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import QuestionField from './QuestionField';
 import type { Category } from '../../types/category-type';
-import type { Question } from '../../types/question-type';
+import type { TestQuestion } from '../../types/test-type';
 
 interface CreateTestModalProps {
   isOpen: boolean;
@@ -13,18 +13,22 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
   const [categories, setCategories] = useState<Category[]>([]);
   const [testName, setTestName] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [questions, setQuestions] = useState<Question[]>([{
-    question: '',
-    answers: ['', ''],
-    correctAnswer: 0
+  const [questions, setQuestions] = useState<TestQuestion[]>([{
+    id: 0,
+    question_text: '',
+    type: null,
+    options: [
+      { id: 0, option_text: '', is_correct: true, index_order: 0 },
+      { id: 0, option_text: '', is_correct: false, index_order: 1 }
+    ]
   }]);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({
     testName: '',
     category: '',
     questions: {} as Record<number, {
-      question: string,
-      answers: string[]
+      question_text: string,
+      options: string[]
     }>
   });
 
@@ -48,9 +52,13 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
   const addNewQuestion = () => {
     if (questions.length < 10) {
       setQuestions([...questions, {
-        question: '',
-        answers: ['', ''],
-        correctAnswer: 0
+        id: 0,
+        question_text: '',
+        type: null,
+        options: [
+          { id: 0, option_text: '', is_correct: true, index_order: 0 },
+          { id: 0, option_text: '', is_correct: false, index_order: 1 }
+        ]
       }]);
     }
   };
@@ -70,8 +78,8 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
       testName: '',
       category: '',
       questions: {} as Record<number, {
-        question: string,
-        answers: string[]
+        question_text: string,
+        options: string[]
       }>
     };
     let isValid = true;
@@ -91,18 +99,18 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
     // Validate questions
     questions.forEach((q, index) => {
       const questionErrors = {
-        question: '',
-        answers: [] as string[]
+        question_text: '',
+        options: [] as string[]
       };
 
-      if (!q.question.trim()) {
-        questionErrors.question = 'Question text is required';
+      if (!q.question_text.trim()) {
+        questionErrors.question_text = 'Question text is required';
         isValid = false;
       }
 
-      q.answers.forEach((answer, answerIndex) => {
-        if (!answer.trim()) {
-          questionErrors.answers[answerIndex] = 'Answer text is required';
+      q.options?.forEach((option, optionIndex) => {
+        if (!option.option_text.trim()) {
+          questionErrors.options[optionIndex] = 'Option text is required';
           isValid = false;
         }
       });
@@ -119,15 +127,13 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsLoading(true);
 
     try {
       // Create test
-      const testResponse = await fetch('/php/test/create_test.php', {
+      const testResponse = await fetch('/api/test', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -139,18 +145,18 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
 
       if (!testResponse.ok) throw new Error('Failed to create test');
       const testData = await testResponse.json();
-      const testId = testData.test_id;
+      const testId = testData.id;
 
       // Create questions and their options
       for (const question of questions) {
-        // Create question
-        const questionResponse = await fetch('/php/test/create_question.php', {
+        const questionResponse = await fetch('/api/question', {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             test: testId,
-            question_text: question.question
+            question_text: question.question_text,
+            type: question.type
           }),
         });
 
@@ -159,16 +165,16 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
         const questionId = questionData.id;
 
         // Create options for this question
-        for (let i = 0; i < question.answers.length; i++) {
-          const optionResponse = await fetch('/php/test/create_option.php', {
+        for (const option of question.options || []) {
+          const optionResponse = await fetch('/api/option', {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               question: questionId,
-              option_text: question.answers[i],
-              is_correct: i === question.correctAnswer,
-              index_order: i
+              option_text: option.option_text,
+              is_correct: option.is_correct,
+              index_order: option.index_order
             }),
           });
 
@@ -177,19 +183,7 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
       }
 
       onSuccess();
-      // Reset form
-      setTestName('');
-      setSelectedCategory('');
-      setQuestions([{
-        question: '',
-        answers: ['', ''],
-        correctAnswer: 0
-      }]);
-      setErrors({
-        testName: '',
-        category: '',
-        questions: {}
-      });
+      handleClose();
 
     } catch (error) {
       console.error('Error creating test:', error);
@@ -199,13 +193,16 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
   };
 
   const handleClose = () => {
-    // Reset all form fields
     setTestName('');
     setSelectedCategory('');
     setQuestions([{
-      question: '',
-      answers: ['', ''],
-      correctAnswer: 0
+      id: 0,
+      question_text: '',
+      type: null,
+      options: [
+        { id: 0, option_text: '', is_correct: true, index_order: 0 },
+        { id: 0, option_text: '', is_correct: false, index_order: 1 }
+      ]
     }]);
     setErrors({
       testName: '',
@@ -300,19 +297,19 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
                 <QuestionField 
                   questionNumber={index + 1}
                   questionData={questionData}
-                  setQuestionData={(newData: Question | ((prev: Question) => Question)) => {
+                  setQuestionData={(newData: TestQuestion | ((prev: TestQuestion) => TestQuestion)) => {
                     const newQuestions = [...questions];
                     newQuestions[index] = typeof newData === 'function' ? newData(questionData) : newData;
                     setQuestions(newQuestions);
                   }}
                   disabled={isLoading}
                 />
-                {errors.questions[index]?.question && (
-                  <p className="mt-1 text-sm text-red-500">{errors.questions[index]?.question}</p>
+                {errors.questions[index]?.question_text && (
+                  <p className="mt-1 text-sm text-red-500">{errors.questions[index]?.question_text}</p>
                 )}
-                {errors.questions[index]?.answers?.map((error, answerIndex) => (
+                {errors.questions[index]?.options?.map((error, optionIndex) => (
                   error ? (
-                    <p key={answerIndex} className="mt-1 text-sm text-red-500">{error}</p>
+                    <p key={optionIndex} className="mt-1 text-sm text-red-500">{error}</p>
                   ) : null
                 ))}
               </div>

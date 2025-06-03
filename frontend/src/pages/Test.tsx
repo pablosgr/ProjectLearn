@@ -43,7 +43,7 @@ export default function Test() {
 
             if (!response.ok) throw new Error('Failed to delete test');
 
-            setTests(prev => prev.filter(test => test.id !== testId));
+            // setTests(prev => prev.filter(test => test.id !== testId));
         } catch (error) {
             console.error('Error deleting test:', error);
         }

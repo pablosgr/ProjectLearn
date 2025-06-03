@@ -1,8 +1,8 @@
 export interface Question {
-  id?: string;
-  question: string;
-  answers: string[];
-  correctAnswer: number;
+    id?: number;
+    question: string;
+    answers: string[];
+    correctAnswer: number;
 }
 export interface ApiQuestionType {
   id: string;
