@@ -140,13 +140,34 @@ class TestService
 
         $testsList = [];
         foreach ($tests as $test) {
+            $questions = [];
+            foreach ($test->getQuestions() as $question) {
+                $options = [];
+                foreach ($question->getOptions() as $option) {
+                    $options[] = [
+                        'id' => $option->getId(),
+                        'option_text' => $option->getOptionText(),
+                        'is_correct' => $option->isCorrect(),
+                        'index_order' => $option->getIndexOrder()
+                    ];
+                }
+
+                $questions[] = [
+                    'id' => $question->getId(),
+                    'question_text' => $question->getQuestionText(),
+                    'type' => $question->getType(),
+                    'options' => $options
+                ];
+            }
+
             $testsList[] = [
                 'id' => $test->getId(),
                 'name' => $test->getName(),
                 'category' => $test->getCategory()->getName(),
                 'author_name' => $test->getAuthor()->getName(),
                 'author_username' => $test->getAuthor()->getUsername(),
-                'created_at' => $test->getCreatedAt()->format('Y-m-d H:i:s')
+                'created_at' => $test->getCreatedAt()->format('Y-m-d H:i:s'),
+                'questions' => $questions
             ];
         }
 
@@ -174,8 +195,8 @@ class TestService
             ];
         }
 
-        $test = $this->testRepository->findBy([$parameter => $query_value]);
-        if (!$test) {
+        $tests = $this->testRepository->findBy([$parameter => $query_value]);
+        if (!$tests) {
             return [
                 'body' => ['error' => 'Test not found'],
                 'status' => Response::HTTP_NOT_FOUND
@@ -183,14 +204,35 @@ class TestService
         }
 
         $testsList = [];
-        foreach ($test as $t) {
+        foreach ($tests as $test) {
+            $questions = [];
+            foreach ($test->getQuestions() as $question) {
+                $options = [];
+                foreach ($question->getOptions() as $option) {
+                    $options[] = [
+                        'id' => $option->getId(),
+                        'option_text' => $option->getOptionText(),
+                        'is_correct' => $option->isCorrect(),
+                        'index_order' => $option->getIndexOrder()
+                    ];
+                }
+
+                $questions[] = [
+                    'id' => $question->getId(),
+                    'question_text' => $question->getQuestionText(),
+                    'type' => $question->getType(),
+                    'options' => $options
+                ];
+            }
+
             $testsList[] = [
-                'id' => $t->getId(),
-                'name' => $t->getName(),
-                'category' => $t->getCategory()->getName(),
-                'author_name' => $t->getAuthor()->getName(),
-                'author_username' => $t->getAuthor()->getUsername(),
-                'created_at' => $t->getCreatedAt()->format('Y-m-d H:i:s')
+                'id' => $test->getId(),
+                'name' => $test->getName(),
+                'category' => $test->getCategory()->getName(),
+                'author_name' => $test->getAuthor()->getName(),
+                'author_username' => $test->getAuthor()->getUsername(),
+                'created_at' => $test->getCreatedAt()->format('Y-m-d H:i:s'),
+                'questions' => $questions
             ];
         }
         

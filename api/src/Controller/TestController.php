@@ -145,7 +145,22 @@ final class TestController extends AbstractController{
                         new OA\Property(property: 'id', type: 'integer', example: 2),
                         new OA\Property(property: 'name', type: 'string', example: 'Mathematics')
                     ]),
-                    new OA\Property(property: 'created_at', type: 'string', format: 'date-time', example: '2025-05-01T10:00:00')
+                    new OA\Property(property: 'created_at', type: 'string', format: 'date-time', example: '2025-05-01T10:00:00'),
+                    new OA\Property(property: 'questions', type: 'array', items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'id', type: 'integer', example: 1),
+                            new OA\Property(property: 'question_text', type: 'string', example: 'What is 2+2?'),
+                            new OA\Property(property: 'type', type: 'string', example: 'multiple_choice'),
+                            new OA\Property(property: 'options', type: 'array', items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'option_text', type: 'string', example: 'Four'),
+                                    new OA\Property(property: 'is_correct', type: 'boolean', example: true),
+                                    new OA\Property(property: 'index_order', type: 'integer', example: 1)
+                                ]
+                            ))
+                        ]
+                    ))
                 ]
             )
         )
@@ -184,18 +199,38 @@ final class TestController extends AbstractController{
                 properties: [
                     new OA\Property(property: 'id', type: 'integer', example: 1),
                     new OA\Property(property: 'name', type: 'string', example: 'Midterm Exam'),
-                    new OA\Property(property: 'author', type: 'object', properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 1),
-                        new OA\Property(property: 'name', type: 'string', example: 'John Doe')
-                    ]),
                     new OA\Property(property: 'category', type: 'object', properties: [
                         new OA\Property(property: 'id', type: 'integer', example: 2),
                         new OA\Property(property: 'name', type: 'string', example: 'Mathematics')
                     ]),
-                    new OA\Property(property: 'created_at', type: 'string', format: 'date-time', example: '2025-05-01T10:00:00')
+                    new OA\Property(property: 'author', type: 'object', properties: [
+                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                        new OA\Property(property: 'name', type: 'string', example: 'John Doe'),
+                        new OA\Property(property: 'username', type: 'string', example: 'johndoe')
+                    ]),
+                    new OA\Property(property: 'created_at', type: 'string', format: 'date-time', example: '2025-05-01T10:00:00'),
+                    new OA\Property(property: 'questions', type: 'array', items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'id', type: 'integer', example: 1),
+                            new OA\Property(property: 'question_text', type: 'string', example: 'What is 2+2?'),
+                            new OA\Property(property: 'type', type: 'string', example: 'multiple_choice'),
+                            new OA\Property(property: 'options', type: 'array', items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'option_text', type: 'string', example: 'Four'),
+                                    new OA\Property(property: 'is_correct', type: 'boolean', example: true),
+                                    new OA\Property(property: 'index_order', type: 'integer', example: 1)
+                                ]
+                            ))
+                        ]
+                    ))
                 ]
             )
         )
+    )]
+    #[OA\Response(
+        response: 400,
+        description: 'Invalid parameter'
     )]
     #[OA\Response(
         response: 404,
