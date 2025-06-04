@@ -22,3 +22,16 @@ export interface TestType {
   created_at: string;
   questions: TestQuestion[];
 }
+
+export interface AssignedTest {
+  test_id: number;
+  test_name: string;
+  test_category: string;
+  unit_id: number | null;
+  unit_name: string | null;
+  assigned_at: string;
+  due_date: string | null;
+  time_limit: number | null;
+  visibility: boolean;
+  is_mandatory: boolean;
+}

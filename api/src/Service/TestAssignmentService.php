@@ -160,6 +160,7 @@ class TestAssignmentService
             $result[] = [
                 'test_id' => $test->getId(),
                 'test_name' => $test->getName(),
+                'test_category' => $test->getCategory()->getName(),
                 'unit_id' => $unit ? $unit->getId() : null,
                 'unit_name' => $unit ? $unit->getName() : null,
                 'assigned_at' => $assignment->getAssignedAt()->format('Y-m-d H:i:s'),
