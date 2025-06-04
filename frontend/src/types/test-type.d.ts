@@ -15,13 +15,10 @@ export interface TestQuestion {
 export interface TestType {
   id: number;
   name: string;
+  category_id: number;
   category: string;
   author_name: string;
   author_username: string;
   created_at: string;
   questions: TestQuestion[];
-}
-
-export interface TestDetailType extends TestType {
-  category_id?: number;
 }

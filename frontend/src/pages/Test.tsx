@@ -34,7 +34,7 @@ export default function Test() {
 
     const handleTestDelete = async (testId: string) => {
         try {
-            const response = await fetch('/php/tests/remove_test.php', {
+            const response = await fetch('/php/test/delete_test.php', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
@@ -43,7 +43,7 @@ export default function Test() {
 
             if (!response.ok) throw new Error('Failed to delete test');
 
-            // setTests(prev => prev.filter(test => test.id !== testId));
+            setTests(prev => prev.filter(test => test.id.toString() !== testId));
         } catch (error) {
             console.error('Error deleting test:', error);
         }

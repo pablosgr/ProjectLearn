@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Test;
+use App\Entity\Question;
+use App\Entity\Option;
 use App\Repository\TestRepository;
 use App\Repository\UserRepository;
 use App\Repository\CategoryRepository;
@@ -78,11 +80,20 @@ class TestService
             ];
         }
 
+        // Delete all options and questions first
+        foreach ($test->getQuestions() as $question) {
+            foreach ($question->getOptions() as $option) {
+                $this->entityManager->remove($option);
+            }
+            $this->entityManager->remove($question);
+        }
+
+        // Then delete the test
         $this->entityManager->remove($test);
         $this->entityManager->flush();
 
         return [
-            'body' => ['message' => 'Test deleted successfully'],
+            'body' => ['message' => 'Test and all related content deleted successfully'],
             'status' => Response::HTTP_OK
         ];
     }
@@ -98,18 +109,12 @@ class TestService
             ];
         }
 
-        if (empty($data)) {
-            return [
-                'body' => ['error' => 'No data provided for update'],
-                'status' => Response::HTTP_BAD_REQUEST
-            ];
-        }
-
+        // Update basic test info
         if (isset($data['name'])) {
             $test->setName($data['name']);
         }
-        if (isset($data['category'])) {
-            $category = $this->categoryRepository->find($data['category']);
+        if (isset($data['category_id'])) {
+            $category = $this->categoryRepository->find($data['category_id']);
             if (!$category) {
                 return [
                     'body' => ['error' => 'Category not found'],
@@ -119,10 +124,77 @@ class TestService
             $test->setCategory($category);
         }
 
+        // Handle questions update
+        if (isset($data['questions'])) {
+            // Remove all existing questions and their options
+            foreach ($test->getQuestions() as $question) {
+                foreach ($question->getOptions() as $option) {
+                    $this->entityManager->remove($option);
+                }
+                $this->entityManager->remove($question);
+            }
+            
+            // Create new questions and options
+            foreach ($data['questions'] as $questionData) {
+                $question = new Question();
+                $question->setTest($test);
+                $question->setQuestionText($questionData['question_text']);
+                $question->setType($questionData['type'] ?? null);
+                $this->entityManager->persist($question);
+                
+                // Create options for this question
+                if (isset($questionData['options']) && is_array($questionData['options'])) {
+                    foreach ($questionData['options'] as $optionData) {
+                        $option = new Option();
+                        $option->setQuestion($question);
+                        $option->setOptionText($optionData['option_text']);
+                        $option->setIsCorrect($optionData['is_correct']);
+                        $option->setIndexOrder($optionData['index_order']);
+                        $this->entityManager->persist($option);
+                        $question->addOption($option);
+                    }
+                }
+            }
+        }
+
         $this->entityManager->flush();
+        
+        // Fetch fresh data
+        $this->entityManager->refresh($test);
+
+        // Format response
+        $questions = [];
+        foreach ($test->getQuestions() as $question) {
+            $options = [];
+            foreach ($question->getOptions() as $option) {
+                $options[] = [
+                    'id' => $option->getId(),
+                    'option_text' => $option->getOptionText(),
+                    'is_correct' => $option->isCorrect(),
+                    'index_order' => $option->getIndexOrder()
+                ];
+            }
+
+            $questions[] = [
+                'id' => $question->getId(),
+                'question_text' => $question->getQuestionText(),
+                'type' => $question->getType(),
+                'options' => $options
+            ];
+        }
+
+        $updatedTest = [
+            'id' => $test->getId(),
+            'name' => $test->getName(),
+            'category' => $test->getCategory()->getName(),
+            'author_name' => $test->getAuthor()->getName(),
+            'author_username' => $test->getAuthor()->getUsername(),
+            'created_at' => $test->getCreatedAt()->format('Y-m-d H:i:s'),
+            'questions' => $questions
+        ];
 
         return [
-            'body' => ['message' => 'Test updated successfully'],
+            'body' => $updatedTest,
             'status' => Response::HTTP_OK
         ];
     }
@@ -163,6 +235,7 @@ class TestService
             $testsList[] = [
                 'id' => $test->getId(),
                 'name' => $test->getName(),
+                'category_id' => $test->getCategory()->getId(),
                 'category' => $test->getCategory()->getName(),
                 'author_name' => $test->getAuthor()->getName(),
                 'author_username' => $test->getAuthor()->getUsername(),
@@ -228,6 +301,7 @@ class TestService
             $testsList[] = [
                 'id' => $test->getId(),
                 'name' => $test->getName(),
+                'category_id' => $test->getCategory()->getId(),
                 'category' => $test->getCategory()->getName(),
                 'author_name' => $test->getAuthor()->getName(),
                 'author_username' => $test->getAuthor()->getUsername(),

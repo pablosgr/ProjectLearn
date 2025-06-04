@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import type { TestType } from '../../types/test-type';
-import type { Category } from '../../types/category-type';
+
+interface Category {
+  id: number;
+  name: string;
+}
 
 interface TestSettingsProps {
   test: TestType;
-  onUpdate: (name: string, category: string) => void;
+  onUpdate: (name: string, category_id: number, category: string) => void;
 }
 
 export default function TestSettings({ test, onUpdate }: TestSettingsProps) {
   const [name, setName] = useState(test.name);
-  const [selectedCategory, setSelectedCategory] = useState<string>(test.category);
+  const [selectedCategory, setSelectedCategory] = useState<Category>({ id: test.category_id, name: test.category });
   const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -19,40 +22,32 @@ export default function TestSettings({ test, onUpdate }: TestSettingsProps) {
       try {
         const response = await fetch('/php/test/get_all_categories.php');
         if (!response.ok) throw new Error('Failed to fetch categories');
-        const data = await response.json();
+        const data: Category[] = await response.json();
         setCategories(data);
       } catch (error) {
         console.error('Error fetching categories:', error);
+        setError('Failed to load categories');
       }
     };
 
     fetchCategories();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+  useEffect(() => {
+    setName(test.name);
+    setSelectedCategory({ id: test.category_id, name: test.category });
+  }, [test.name, test.category_id, test.category]);
 
-    try {
-      const response = await fetch('/php/test/update_test.php', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: test.id,
-          name: name.trim(),
-          category: selectedCategory
-        }),
-      });
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+    onUpdate(e.target.value, selectedCategory.id, selectedCategory.name);
+  };
 
-      if (!response.ok) throw new Error('Failed to update test');
-      
-      onUpdate(name, selectedCategory);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update test');
-    } finally {
-      setIsLoading(false);
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const category = categories.find(cat => cat.id === Number(e.target.value));
+    if (category) {
+      setSelectedCategory(category);
+      onUpdate(name, category.id, category.name);
     }
   };
 
@@ -60,7 +55,7 @@ export default function TestSettings({ test, onUpdate }: TestSettingsProps) {
     <div className="bg-white rounded-lg shadow-sm p-6">
       <h2 className="text-xl text-neutral-900 font-medium mb-6">Test Settings</h2>
       
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
+      <div className="space-y-6 max-w-md">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Test Name
@@ -68,7 +63,7 @@ export default function TestSettings({ test, onUpdate }: TestSettingsProps) {
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={handleNameChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900"
           />
         </div>
@@ -78,8 +73,8 @@ export default function TestSettings({ test, onUpdate }: TestSettingsProps) {
             Category
           </label>
           <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            value={selectedCategory.id}
+            onChange={handleCategoryChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900"
           >
             {categories.map((cat) => (
@@ -93,15 +88,7 @@ export default function TestSettings({ test, onUpdate }: TestSettingsProps) {
         {error && (
           <p className="text-sm text-red-500">{error}</p>
         )}
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 disabled:opacity-50"
-        >
-          {isLoading ? 'Saving...' : 'Save Changes'}
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

@@ -133,7 +133,7 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
 
     try {
       // Create test
-      const testResponse = await fetch('/api/test', {
+      const testResponse = await fetch('/php/test/create_test.php', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -145,11 +145,11 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
 
       if (!testResponse.ok) throw new Error('Failed to create test');
       const testData = await testResponse.json();
-      const testId = testData.id;
+      const testId = testData.test_id;
 
       // Create questions and their options
       for (const question of questions) {
-        const questionResponse = await fetch('/api/question', {
+        const questionResponse = await fetch('/php/test/create_question.php', {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -166,7 +166,7 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
 
         // Create options for this question
         for (const option of question.options || []) {
-          const optionResponse = await fetch('/api/option', {
+          const optionResponse = await fetch('/php/test/create_option.php', {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },

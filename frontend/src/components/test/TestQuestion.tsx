@@ -3,7 +3,7 @@ import QuestionField from './QuestionField';
 import type { TestQuestion } from '../../types/test-type';
 
 interface TestQuestionsProps {
-  questions: TestQuestion[];
+  questions?: TestQuestion[];
   onQuestionsUpdate: (questions: TestQuestion[]) => void;
   isTeacher: boolean;
 }
@@ -36,11 +36,16 @@ const adjustOptions = (question: TestQuestion, targetCount: 2 | 4): TestQuestion
   return question;
 };
 
-export default function TestQuestions({ questions, onQuestionsUpdate, isTeacher }: TestQuestionsProps) {
+export default function TestQuestions({ questions = [], onQuestionsUpdate, isTeacher }: TestQuestionsProps) {
     const [errors] = useState<Record<number, {
         question_text?: string;
         options?: string[];
     }>>({});
+
+    // Add a guard clause at the start of the component
+    if (!Array.isArray(questions)) {
+        return null;
+    }
 
     const addNewQuestion = () => {
         if (questions.length < 10) {

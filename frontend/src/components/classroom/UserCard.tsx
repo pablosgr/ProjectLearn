@@ -46,11 +46,11 @@ const UserCard: FC<UserCardProps> = ({ user, onDelete }) => {
             <p className="text-red-500 text-xs mt-1">{error}</p>
           )}
         </div>
-        {userData?.role === 'admin' && (
+        {userData?.role !== 'student' && (
           <button
             onClick={() => {
               setShowDeleteModal(true);
-              setError(null); // Clear any previous errors
+              setError(null);
             }}
             className="text-red-600 hover:text-red-800 p-2 hover:cursor-pointer"
             title="Delete user"
