@@ -47,3 +47,16 @@ export interface TestResult {
   started_at: string;
   ended_at: string;
 }
+
+export interface TestResultResponse {
+  id: number;
+  student: string;
+  classroom: string;
+  test: string;
+  score: number;
+  total_questions: number;
+  correct_answers: number;
+  status: string;
+  started_at: string;
+  ended_at: string;
+}

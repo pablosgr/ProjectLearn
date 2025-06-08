@@ -23,7 +23,7 @@ if (isset($data['class_id'])) {
     $query_string .= "$new_field=$field_value";
 }
 
-if (isset($fields['test'])) {
+if (isset($data['test_id'])) {
     $new_field = 'test';
     $field_value = $data['test_id'];
     if (!empty($query_string)) {

@@ -10,6 +10,12 @@ interface TestAssignmentCardProps {
   onDelete: (testId: number) => Promise<void>;
 }
 
+interface TestResultRequest {
+  class_id: string;
+  test_id: number;
+  user_id?: string;
+}
+
 export default function TestAssignmentCard({ classroomId, test, onDelete }: TestAssignmentCardProps){
   const { userData } = useUserData();
   const navigate = useNavigate();
@@ -36,15 +42,17 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
     setIsLoading(true);
 
     try {
+      const requestBody: TestResultRequest = {
+        class_id: classroomId,
+        test_id: test.test_id,
+        ...(userData?.role === 'student' && { user_id: userData.id as string })
+      };
+
       const response = await fetch(`/php/test/get_test_result.php`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          user_id: userData?.id,
-          class_id: classroomId,
-          test_id: test.test_id
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       const data = await response.json();
@@ -65,9 +73,7 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
   };
 
   useEffect(() => {
-    if (userData?.role === 'student') {
-      checkForResults();
-    }
+    checkForResults();
   }, []);
 
   return (
@@ -137,7 +143,7 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
               className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
             >
               {userData?.role === 'teacher' 
-                ? 'View Results' 
+                ? 'View Results'
                 : hasResult 
                   ? 'View Result' 
                   : 'Go to Test'
