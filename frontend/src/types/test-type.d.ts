@@ -35,3 +35,15 @@ export interface AssignedTest {
   visibility: boolean;
   is_mandatory: boolean;
 }
+
+export interface TestResult {
+  user: string;
+  class: number;
+  test: number;
+  score: number;
+  total_questions: number;
+  correct_answers: number;
+  status: 'completed' | 'in_progress';
+  started_at: string;
+  ended_at: string;
+}

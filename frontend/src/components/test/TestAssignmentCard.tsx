@@ -1,17 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUserData } from '../../context/UserContext';
+import { useNavigate } from 'react-router';
 import Modal from '../ui/Modal';
 import type { AssignedTest } from '../../types/test-type';
 
 interface TestAssignmentCardProps {
+  classroomId: string;
   test: AssignedTest;
   onDelete: (testId: number) => Promise<void>;
 }
 
-export default function TestAssignmentCard({ test, onDelete }: TestAssignmentCardProps){
+export default function TestAssignmentCard({ classroomId, test, onDelete }: TestAssignmentCardProps){
   const { userData } = useUserData();
+  const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasResult, setHasResult] = useState<boolean>(false);
 
   const handleDelete = async () => {
     try {
@@ -27,11 +32,51 @@ export default function TestAssignmentCard({ test, onDelete }: TestAssignmentCar
     }
   };
 
+  const checkForResults = async () => {
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`/php/test/get_test_result.php`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          user_id: userData?.id,
+          class_id: classroomId,
+          test_id: test.test_id
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.error) {
+        setHasResult(false);
+        throw new Error(data.error);
+      }
+
+      if (data.length > 0) {
+        setHasResult(true);
+      }
+    } catch (error) {
+      console.error('Error checking results:', error);
+    }
+
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (userData?.role === 'student') {
+      checkForResults();
+    }
+  }, []);
+
   return (
     <>
       <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
         <div className="flex justify-between items-start">
-          <h3 className="text-lg text-black font-semibold mb-2">{test.test_name} - {test.test_category}</h3>
+          <h3 className="text-lg text-black font-semibold mb-2">
+            {test.test_name} - {test.test_category}
+          </h3>
           {userData?.role === 'teacher' && (
             <button
               onClick={() => {
@@ -57,27 +102,49 @@ export default function TestAssignmentCard({ test, onDelete }: TestAssignmentCar
           {test.time_limit && (
             <p>Time limit: {test.time_limit} minutes</p>
           )}
-          <div className="flex gap-2 mt-2">
-            <span className={`px-2 py-1 rounded-full text-xs ${
-              test.visibility 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-gray-100 text-gray-800'
-            }`}>
-              {test.visibility ? 'Visible' : 'Hidden'}
-            </span>
-            <span className={`px-2 py-1 rounded-full text-xs ${
-              test.is_mandatory 
-                ? 'bg-red-100 text-red-800' 
-                : 'bg-blue-100 text-blue-800'
-            }`}>
-              {test.is_mandatory ? 'Mandatory' : 'Optional'}
-            </span>
-          </div>
+          {userData?.role === 'teacher' && (
+            <div className="flex gap-2 mt-2">
+              <span className={`px-2 py-1 rounded-full text-xs ${
+                test.visibility 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-gray-100 text-gray-800'
+              }`}>
+                {test.visibility ? 'Visible' : 'Hidden'}
+              </span>
+              <span className={`px-2 py-1 rounded-full text-xs ${
+                test.is_mandatory 
+                  ? 'bg-red-100 text-red-800' 
+                  : 'bg-blue-100 text-blue-800'
+              }`}>
+                {test.is_mandatory ? 'Mandatory' : 'Optional'}
+              </span>
+            </div>
+          )}
         </div>
 
         {error && (
           <p className="text-red-500 text-xs mt-2">{error}</p>
         )}
+
+        <div className="mt-4 flex justify-end">
+          { !isLoading && (
+            <button
+              onClick={() => navigate(
+                hasResult 
+                  ? `/test-result/${test.test_id}/classroom/${classroomId}` 
+                  : `/test-session/${test.test_id}/classroom/${classroomId}`
+              )}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
+            >
+              {userData?.role === 'teacher' 
+                ? 'View Results' 
+                : hasResult 
+                  ? 'View Result' 
+                  : 'Go to Test'
+              }
+            </button>
+          ) }
+        </div>
       </div>
 
       <Modal

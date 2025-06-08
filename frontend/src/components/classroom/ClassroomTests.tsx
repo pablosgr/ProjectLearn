@@ -116,6 +116,7 @@ export default function ClassroomTests() {
           {tests.map((test) => (
             <TestAssignmentCard
               key={test.test_id}
+              classroomId={classroomId!}
               test={test}
               onDelete={handleDeleteAssignment}
             />

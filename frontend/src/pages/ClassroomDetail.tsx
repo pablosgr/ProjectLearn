@@ -4,22 +4,14 @@ import { useUserData } from '../context/UserContext';
 import ClassroomTests from '../components/classroom/ClassroomTests';
 import ClassroomStudents from '../components/classroom/ClassroomStudents';
 import ClassroomSettings from '../components/classroom/ClassroomSettings';
-
-interface ClassroomDetail {
-  id: string;
-  teacher_id: string;
-  teacher_name: string;
-  teacher_username: string;
-  name: string;
-  created_at: string;
-}
+import type { ClassroomType } from '../types/classroom-type';
 
 type Tab = 'tests' | 'students' | 'settings';
 
 export default function ClassroomDetail() {
   const { id } = useParams<{ id: string }>();
   const { userData } = useUserData();
-  const [classroom, setClassroom] = useState<ClassroomDetail | null>(null);
+  const [classroom, setClassroom] = useState<ClassroomType | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('tests');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

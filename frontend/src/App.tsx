@@ -8,8 +8,9 @@ import Classroom from './pages/Classroom'
 import ClassroomDetail from './pages/ClassroomDetail'
 import EnrollClassroom from './pages/EnrollClassroom'
 import Test from './pages/Test'
-import Users from './pages/Users';
+import Users from './pages/Users'
 import TestDetail from './pages/TestDetail'
+import TestSession from './pages/TestSession'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path='/profile' element={<Profile />}/>
             <Route path='/test' element={<Test />} />
             <Route path='/test/:id' element={<TestDetail />} />
+            <Route path='/test-session/:id/classroom/:classroomId' element={<TestSession />} />
             <Route path='/classroom' element={<Classroom />} />
             <Route path="/classroom/:id" element={<ClassroomDetail />} />
             <Route path="/enroll/:id" element={<EnrollClassroom />} />
