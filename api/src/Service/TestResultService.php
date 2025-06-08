@@ -115,23 +115,39 @@ class TestResultService
         ];
     }
 
-    public function listTestResultsByParam(string $param, string $query_value): array
+    public function listTestResultsByParam(array $params): array
     {
-        if (!in_array($param, ['student', 'classroom', 'test'])) {
+        $allowedParams = ['student', 'classroom', 'test'];
+        $criteria = [];
+
+        // Validate and build search criteria
+        foreach ($params as $param => $value) {
+            if (!in_array($param, $allowedParams)) {
+                return [
+                    'body' => ['error' => "Invalid parameter: $param"],
+                    'status' => Response::HTTP_BAD_REQUEST
+                ];
+            }
+
+            if (empty($value)) {
+                return [
+                    'body' => ['error' => "Query value cannot be empty for: $param"],
+                    'status' => Response::HTTP_BAD_REQUEST
+                ];
+            }
+
+            $criteria[$param] = $value;
+        }
+
+        if (empty($criteria)) {
             return [
-                'body' => ['error' => 'Invalid parameter'],
+                'body' => ['error' => 'No search parameters provided'],
                 'status' => Response::HTTP_BAD_REQUEST
             ];
         }
 
-        if (empty($query_value)) {
-            return [
-                'body' => ['error' => 'Query value cannot be empty'],
-                'status' => Response::HTTP_BAD_REQUEST
-            ];
-        }
-
-        $testResults = $this->testResultRepository->findBy([$param => $query_value]);
+        $testResults = $this->testResultRepository->findBy($criteria);
+        
         if (!$testResults) {
             return [
                 'body' => ['error' => 'No test results found'],

@@ -96,63 +96,76 @@ final class TestResultController extends AbstractController{
         return $this -> json($result['body'], $result['status']);
     }
     
-    
-    #[Route('/{param}', name: 'get_test_result', methods: ['GET'])]
-    #[OA\Get(summary: 'Get test results by parameter')]
+    #[Route('/search', name: 'search_test_results', methods: ['GET'])]
+    #[OA\Get(summary: 'Search test results by multiple parameters')]
     #[OA\Parameter(
-        name: 'param',
-        in: 'path',
-        description: 'Parameter type (student, classroom, test)',
-        schema: new OA\Schema(type: 'string'),
-        example: 'student'
+        name: 'student',
+        in: 'query',
+        description: 'Student ID',
+        schema: new OA\Schema(type: 'integer'),
+        required: false
     )]
     #[OA\Parameter(
-        name: 'value',
+        name: 'classroom',
         in: 'query',
-        description: 'Parameter value (ID)',
+        description: 'Classroom ID',
         schema: new OA\Schema(type: 'integer'),
-        example: 1
+        required: false
+    )]
+    #[OA\Parameter(
+        name: 'test',
+        in: 'query',
+        description: 'Test ID',
+        schema: new OA\Schema(type: 'integer'),
+        required: false
     )]
     #[OA\Response(
         response: 200,
-        description: 'Returns test results matching the parameter',
+        description: 'Returns matching test results',
         content: new OA\JsonContent(
             type: 'array',
             items: new OA\Items(
                 properties: [
                     new OA\Property(property: 'id', type: 'integer', example: 1),
-                    new OA\Property(property: 'student', type: 'object', properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 1),
-                        new OA\Property(property: 'name', type: 'string', example: 'John Doe')
-                    ]),
-                    new OA\Property(property: 'classroom', type: 'object', properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 2),
-                        new OA\Property(property: 'name', type: 'string', example: 'Mathematics 101')
-                    ]),
-                    new OA\Property(property: 'test', type: 'object', properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 3),
-                        new OA\Property(property: 'name', type: 'string', example: 'Midterm Exam')
-                    ]),
+                    new OA\Property(property: 'student', type: 'string', example: 'John Doe'),
+                    new OA\Property(property: 'classroom', type: 'string', example: 'Mathematics 101'),
+                    new OA\Property(property: 'test', type: 'string', example: 'Midterm Exam'),
                     new OA\Property(property: 'score', type: 'number', example: 85),
+                    new OA\Property(property: 'total_questions', type: 'integer', example: 10),
+                    new OA\Property(property: 'correct_answers', type: 'integer', example: 8),
                     new OA\Property(property: 'status', type: 'string', example: 'completed'),
-                    new OA\Property(property: 'completed_at', type: 'string', format: 'date-time', example: '2025-05-08T10:45:00')
+                    new OA\Property(property: 'started_at', type: 'string', format: 'date-time', example: '2025-05-08T10:15:00'),
+                    new OA\Property(property: 'ended_at', type: 'string', format: 'date-time', example: '2025-05-08T10:45:00')
                 ]
             )
         )
     )]
     #[OA\Response(
+        response: 400,
+        description: 'Invalid parameters'
+    )]
+    #[OA\Response(
         response: 404,
         description: 'No results found'
     )]
-    public function get_test_result(
-        string $param,
+    public function searchTestResults(
         TestResultService $testResultService,
         Request $request
-    ): JsonResponse
-    {
-        $query_value = $request -> query -> get('value');
-        $result  = $testResultService -> listTestResultsByParam($param, $query_value);
+    ): JsonResponse {
+        $params = [];
+        
+        if ($request->query->has('student')) {
+            $params['student'] = $request->query->get('student');
+        }
+        if ($request->query->has('classroom')) {
+            $params['classroom'] = $request->query->get('classroom');
+        }
+        if ($request->query->has('test')) {
+            $params['test'] = $request->query->get('test');
+        }
 
-        return $this -> json($result['body'], $result['status']);
+        $result = $testResultService->listTestResultsByParam($params);
+
+        return $this->json($result['body'], $result['status']);
     }
 }
