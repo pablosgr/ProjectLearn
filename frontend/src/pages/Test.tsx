@@ -3,11 +3,13 @@ import { useUserData } from "../context/UserContext";
 import type { TestType } from '../types/test-type';
 import TestCard from '../components/test/TestCard';
 import CreateTestModal from '../components/test/CreateTestModal';
+import GenerateTestModal from '../components/test/GenerateTestModal';
 
 export default function Test() {
     const { userData } = useUserData();
     const [tests, setTests] = useState<TestType[]>([]);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showGenerateModal, setShowGenerateModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchTests = async () => {
@@ -62,12 +64,20 @@ export default function Test() {
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">My Tests</h1>
-                <button
-                    onClick={() => setShowCreateModal(true)}
-                    className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
-                >
-                    ➕ New Test
-                </button>
+                <div className="flex gap-4">
+                    <button
+                        onClick={() => setShowGenerateModal(true)}
+                        className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                    >
+                        🤖 AI Generate
+                    </button>
+                    <button
+                        onClick={() => setShowCreateModal(true)}
+                        className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+                    >
+                        ➕ New Test
+                    </button>
+                </div>
             </div>
 
             <CreateTestModal
@@ -76,6 +86,15 @@ export default function Test() {
                 onSuccess={() => {
                     fetchTests();
                     setShowCreateModal(false);
+                }}
+            />
+
+            <GenerateTestModal
+                isOpen={showGenerateModal}
+                onClose={() => setShowGenerateModal(false)}
+                onSuccess={() => {
+                    fetchTests();
+                    setShowGenerateModal(false);
                 }}
             />
 
