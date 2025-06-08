@@ -16,7 +16,7 @@ interface TestResultRequest {
   user_id?: string;
 }
 
-export default function TestAssignmentCard({ classroomId, test, onDelete }: TestAssignmentCardProps){
+export default function TestAssignmentCard({ classroomId, test, onDelete }: TestAssignmentCardProps) {
   const { userData } = useUserData();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -76,6 +76,11 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
     checkForResults();
   }, []);
 
+  const isPastDue = () => {
+    if (!test.due_date) return false;
+    return new Date(test.due_date) < new Date();
+  };
+
   return (
     <>
       <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
@@ -103,7 +108,14 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
           )}
           <p>Assigned: {new Date(test.assigned_at).toLocaleDateString()}</p>
           {test.due_date && (
-            <p>Due: {new Date(test.due_date).toLocaleDateString()}</p>
+            <div className="flex items-center gap-2">
+              <p>Due: {new Date(test.due_date).toLocaleDateString()}</p>
+              {isPastDue() && !hasResult && (
+                <span className="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+                  Past Due
+                </span>
+              )}
+            </div>
           )}
           {test.time_limit && (
             <p>Time limit: {test.time_limit} minutes</p>
@@ -133,23 +145,27 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
         )}
 
         <div className="mt-4 flex justify-end">
-          { !isLoading && (
-            <button
-              onClick={() => navigate(
-                hasResult 
-                  ? `/test-result/${test.test_id}/classroom/${classroomId}` 
-                  : `/test-session/${test.test_id}/classroom/${classroomId}`
+          {!isLoading && (
+            <>
+              {(userData?.role === 'teacher' || hasResult || !isPastDue()) && (
+                <button
+                  onClick={() => navigate(
+                    hasResult 
+                      ? `/test-result/${test.test_id}/classroom/${classroomId}` 
+                      : `/test-session/${test.test_id}/classroom/${classroomId}`
+                  )}
+                  className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
+                >
+                  {userData?.role === 'teacher' 
+                    ? 'View Results'
+                    : hasResult 
+                      ? 'View Result' 
+                      : 'Go to Test'
+                  }
+                </button>
               )}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
-            >
-              {userData?.role === 'teacher' 
-                ? 'View Results'
-                : hasResult 
-                  ? 'View Result' 
-                  : 'Go to Test'
-              }
-            </button>
-          ) }
+            </>
+          )}
         </div>
       </div>
 
