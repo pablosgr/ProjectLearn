@@ -1,7 +1,8 @@
-import { Outlet, Link, useNavigate } from 'react-router'
+import { Outlet, useNavigate } from 'react-router'
 import { useEffect } from 'react';
 import { useUserData } from './context/UserContext.tsx';
 import { useValidateSession } from './hooks/UseValidateSession.tsx';
+import HeaderElement from './components/ui/HeaderElement';
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -42,25 +43,23 @@ export default function Layout() {
 
   return (
     <>
-      <header className='h-[80px] w-full bg-neutral-500 flex items-center justify-between p-5'>
-        <p className='w-[150px]'>Welcome, {userData?.username}</p>
+      <header className='h-[80px] w-full bg-[#DDA853] flex items-center justify-between px-8 text-white'>
+        <p className='w-[200px] text-lg font-medium select-none'>Track & Learn</p>
         <nav className='w-full'>
-          <ul className='flex flex-row gap-8 justify-end'>
-            <Link to="/home"><li>Home</li></Link>
-            {
-              userData?.role !== 'student' && (
-                <Link to="/test"><li>Tests</li></Link>
-              )
-            }
-            {
-              userData?.role === 'admin' && (
-                <Link to="/users"><li>Users</li></Link>
-              )
-            }
-            <Link to="/classroom"><li>Classrooms</li></Link>
-            <Link to="/profile"><li>Profile</li></Link>
-            <li onClick={handleLogout}>Log out</li>
-            {/* NavLink for conditional rendering */}
+          <ul className='flex flex-row gap-14 justify-around items-center'>
+            <HeaderElement to="/home">Home</HeaderElement>
+
+            {userData?.role !== 'student' && (
+              <HeaderElement to="/test">Tests</HeaderElement>
+            )}
+
+            {userData?.role === 'admin' && (
+              <HeaderElement to="/users">Users</HeaderElement>
+            )}
+
+            <HeaderElement to="/classroom">Classrooms</HeaderElement>
+            <HeaderElement to="/profile">Profile</HeaderElement>
+            <HeaderElement onClick={handleLogout}>Log out</HeaderElement>
           </ul>
         </nav>
       </header>
