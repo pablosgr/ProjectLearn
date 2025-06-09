@@ -50,9 +50,6 @@ export default function Login() {
       if (!response.ok || data.error) {
         throw new Error(data.error || 'Login failed');
       }
-      
-      setUsername('');
-      setPassword('');
 
       navigate('/home');
       
@@ -69,14 +66,16 @@ export default function Login() {
   }
 
   return (
-    <>
-      <h1>Welcome, please log in</h1>
+    <div className="flex flex-col h-screen items-center justify-center">
+      <h1 className='text-3xl mb-10 font-medium'>Please, log in to proceed</h1>
       <form 
         className="
-          flex flex-col gap-3
-          max-w-[400px]
-          rounded-2xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.8)] 
-          shadow-neutral-900 bg-neutral-700
+          flex flex-col gap-6
+          max-w-[400px] min-w-[400px]
+          h-fit
+          text-neutral-600
+          rounded-2xl p-10
+          shadow-xl bg-white
         "
         onSubmit={handleSubmit}
       >
@@ -85,7 +84,7 @@ export default function Login() {
           id="username" 
           name="username" 
           placeholder="Username" 
-          className="border-1 p-1 rounded-lg" 
+          className="border-1 border-neutral-500 p-2 rounded-lg" 
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
@@ -94,12 +93,17 @@ export default function Login() {
           id="password" 
           name="password" 
           placeholder="Password" 
-          className="border-1 p-1 rounded-lg" 
+          className="border-1 border-neutral-500 p-2 rounded-lg" 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+            {error}
+          </div>
+        )}
         <button 
-          className="rounded-3xl bg-neutral-500 px-3 py-2 hover:cursor-pointer hover:bg-neutral-600 disabled:opacity-50" 
+          className="rounded-xl text-white text-lg font-medium bg-[#DDA853] px-3 py-2.5 hover:cursor-pointer hover:bg-[#b98e48] transition-colors disabled:opacity-50" 
           type="submit"
           disabled={loading}
         >
@@ -109,17 +113,12 @@ export default function Login() {
           Don't have an account?{' '}
           <Link 
             to="/register" 
-            className="text-cyan-400 hover:text-cyan-300 transition-colors"
+            className="text-cyan-600 hover:text-cyan-400 transition-colors"
           >
             Register here
           </Link>
         </p>
       </form>
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
-          {error}
-        </div>
-      )}
-    </>
+    </div>
   );
 }

@@ -74,64 +74,63 @@ const UserForm: React.FC<UserFormProps> = ({
 
   return (
     <form 
-      className="flex flex-col gap-4 bg-neutral-700 rounded-2xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+      className="
+        flex flex-col gap-6
+        max-w-[400px] min-w-[400px]
+        h-fit
+        text-neutral-600
+        rounded-2xl p-10
+        shadow-xl bg-white
+      "
       onSubmit={handleSubmit}
     >
-      <div>
-        <input 
-          type="text"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full p-2 rounded-lg bg-neutral-600 border border-neutral-500 focus:outline-none focus:border-cyan-500"
-        />
-        {errors.name && (
-          <p className="text-red-400 text-sm mt-1">{errors.name}</p>
-        )}
-      </div>
+      <input 
+        type="text"
+        placeholder="Full Name"
+        value={formData.name}
+        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+        className="border-1 border-neutral-500 p-2 rounded-lg"
+      />
+      {errors.name && (
+        <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+      )}
 
-      <div>
-        <input 
-          type="text"
-          placeholder="Username (max 12 characters)"
-          value={formData.username}
-          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-          className="w-full p-2 rounded-lg bg-neutral-600 border border-neutral-500 focus:outline-none focus:border-cyan-500"
-          maxLength={12}
-        />
-        {errors.username && (
-          <p className="text-red-400 text-sm mt-1">{errors.username}</p>
-        )}
-      </div>
+      <input 
+        type="text"
+        placeholder="Username (max 12 characters)"
+        value={formData.username}
+        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+        className="border-1 border-neutral-500 p-2 rounded-lg"
+        maxLength={12}
+      />
+      {errors.username && (
+        <p className="text-red-400 text-sm mt-1">{errors.username}</p>
+      )}
 
-      <div>
-        <input 
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full p-2 rounded-lg bg-neutral-600 border border-neutral-500 focus:outline-none focus:border-cyan-500"
-        />
-        {errors.email && (
-          <p className="text-red-400 text-sm mt-1">{errors.email}</p>
-        )}
-      </div>
+      <input 
+        type="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        className="border-1 border-neutral-500 p-2 rounded-lg"
+      />
+      {errors.email && (
+        <p className="text-red-400 text-sm mt-1">{errors.email}</p>
+      )}
 
-      <div>
-        <input 
-          type="password"
-          placeholder="Password (5-8 characters)"
-          value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-          className="w-full p-2 rounded-lg bg-neutral-600 border border-neutral-500 focus:outline-none focus:border-cyan-500"
-        />
-        {errors.password && (
-          <p className="text-red-400 text-sm mt-1">{errors.password}</p>
-        )}
-      </div>
+      <input 
+        type="password"
+        placeholder="Password (5-8 characters)"
+        value={formData.password}
+        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+        className="border-1 border-neutral-500 p-2 rounded-lg"
+      />
+      {errors.password && (
+        <p className="text-red-400 text-sm mt-1">{errors.password}</p>
+      )}
 
       {errors.general && (
-        <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
           {errors.general}
         </div>
       )}
@@ -139,7 +138,7 @@ const UserForm: React.FC<UserFormProps> = ({
       <button 
         type="submit"
         disabled={loading}
-        className="mt-2 rounded-3xl bg-cyan-600 px-4 py-2 font-medium hover:bg-cyan-700 transition-colors disabled:opacity-50"
+        className="rounded-xl text-white text-lg font-medium bg-[#DDA853] px-3 py-2.5 hover:cursor-pointer hover:bg-[#b98e48] transition-colors disabled:opacity-50"
       >
         {loading ? 'Processing...' : submitButtonText}
       </button>

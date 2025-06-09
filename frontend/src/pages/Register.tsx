@@ -35,15 +35,13 @@ export default function Register() {
   };
 
   return (
-    <main className="min-h-screen grid place-items-center bg-neutral-800 text-white p-4">
-      <div className="w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Student Registration</h1>
-        <UserForm 
-          onSubmit={handleRegister}
-          submitButtonText="Register"
-          loading={loading}
-        />
-      </div>
-    </main>
+    <div className="flex flex-col h-screen items-center justify-center">
+      <h1 className="text-3xl font-medium text-center mb-6">Student Registration</h1>
+      <UserForm 
+        onSubmit={handleRegister}
+        submitButtonText="Register"
+        loading={loading}
+      />
+    </div>
   );
 }

@@ -4,7 +4,7 @@ import validateSession from '../utils/auth_helper';
 import { useUserData } from '../context/UserContext';
 import getUserData from '../utils/user_helper';
 
-export function useValidateSession(redirectOnFailure = true, redirectDelay = 2000) {
+export function useValidateSession(redirectOnFailure = true, redirectDelay = 500) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSessionValid, setIsSessionValid] = useState(false);
   const [error, setError] = useState<Error | null>(null);

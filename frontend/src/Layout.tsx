@@ -38,7 +38,10 @@ export default function Layout() {
 
   if (!isLogged) {
     return <div className='w-full h-screen flex items-center justify-center'>
-      <p className='text-3xl font-medium'>Please authenticate, redirecting to login..</p>
+      <span className='flex flex-col items-center gap-4'>
+        <LoaderCircle className='animate-spin' size={50} />
+        <p className='text-lg font-medium'>Loading..</p>
+      </span>
     </div>;
   }
 
