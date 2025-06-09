@@ -34,6 +34,9 @@ const CreateClassModal: FC<CreateClassModalProps> = ({ isOpen, onClose, onSucces
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create classroom');
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
     }
   };
 
@@ -43,11 +46,9 @@ const CreateClassModal: FC<CreateClassModalProps> = ({ isOpen, onClose, onSucces
       onClose={onClose}
       onConfirm={handleSubmit}
       title="Create New Class"
+      actionColor='green'
     >
       <div className="space-y-4">
-        {error && (
-          <p className="text-red-600 text-sm">{error}</p>
-        )}
         <input
           type="text"
           value={className}
@@ -56,6 +57,9 @@ const CreateClassModal: FC<CreateClassModalProps> = ({ isOpen, onClose, onSucces
           className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
           autoFocus
         />
+        {error && (
+          <p className="text-red-500 text-sm">{error}</p>
+        )}
       </div>
     </Modal>
   );

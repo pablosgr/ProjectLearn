@@ -4,6 +4,8 @@ import type { StudentClassroomsResponse } from '../types/student-classrooms-type
 import type { ClassroomsType } from '../types/classroom-type.d.ts';
 import ClassroomCard from '../components/classroom/ClassroomCard.tsx';
 import CreateClassModal from '../components/classroom/ClassroomModal.tsx';
+import { Plus } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 
 export default function Classroom() {
   const { userData } = useUserData();
@@ -118,20 +120,20 @@ export default function Classroom() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+    <div className="container h-full mx-auto px-4 py-8">
+      <div className="flex justify-between flex-wrap gap-6 items-center mb-8">
         <h1 className="text-3xl font-bold">{userData?.role === 'admin' ? 'Classrooms Management' : 'My Classrooms'}</h1>
         {userData?.role === 'teacher' && (
           <button
             onClick={() => setShowCreateModal(true)}
-            className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+            className="bg-cyan-600 text-white font-medium flex flex-row gap-3 p-3 rounded-lg hover:bg-cyan-700 transition-colors hover:cursor-pointer"
           >
-            ➕ New Class
+            <Plus strokeWidth={3}/>
+            New Class
           </button>
         )}
       </div>
 
-      {/* Create Class Modal */}
       <CreateClassModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
@@ -141,14 +143,17 @@ export default function Classroom() {
       />
 
       {isLoading ? (
-        <div className="flex justify-center items-center">
-          <p className="text-gray-600">Loading classrooms...</p>
-        </div>
+        <section className="flex h-full justify-center items-center">
+          <div className="text-gray-600 pt-10 flex flex-col items-center gap-4">
+            <LoaderCircle className="animate-spin" color='#5d8297' size={45} />
+            <span className='text-[#5d8297] text-lg font-medium'>Loading classrooms...</span>
+          </div>
+        </section>
       ) : (
         <div className="space-y-8">
 
           {teacherClassrooms && teacherClassrooms.length > 0 && (
-            <section className="flex flex-row gap-6">
+            <section className="flex flex-row flex-wrap gap-10">
                 {teacherClassrooms.map((classroom) => (
                   <ClassroomCard
                     key={classroom.id}
@@ -162,7 +167,7 @@ export default function Classroom() {
           )}
 
           {studentClassrooms && studentClassrooms.length > 0 && (
-            <section className="flex flex-row gap-6">
+            <section className="flex flex-row flex-wrap gap-10">
                 {studentClassrooms.map((classroom) => (
                   <ClassroomCard
                     key={classroom.id}
@@ -175,7 +180,7 @@ export default function Classroom() {
           )}
           
           {(!studentClassrooms?.length && !teacherClassrooms?.length) && (
-            <p className="text-gray-600">No classrooms found.</p>
+            <p className="text-[#5d8297] pt-15 text-lg font-medium text-center">No classrooms found.</p>
           )}
         </div>
       )}

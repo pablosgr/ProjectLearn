@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useUserData } from './context/UserContext.tsx';
 import { useValidateSession } from './hooks/UseValidateSession.tsx';
 import HeaderElement from './components/ui/HeaderElement';
+import { LoaderCircle } from 'lucide-react';
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -67,14 +68,17 @@ export default function Layout() {
       <main>
         {
           isLoading && (
-            <div className='px-30 pt-10'>
-              <p>Authenticating..</p>
+            <div className='px-[18%] pt-10 w-full h-full flex items-center justify-center'>
+              <span className='pt-80 flex flex-col items-center gap-4'>
+                <LoaderCircle className='animate-spin' size={50} />
+                <p className='text-lg font-medium'>Loading..</p>
+              </span>
             </div>
           )
         }
         {
           !isLoading && (
-            <div className='px-30 pt-10'>
+            <div className='px-[18%] pt-10 w-full'>
               <Outlet />
             </div>
           )

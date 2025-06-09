@@ -6,10 +6,11 @@ interface ModalProps {
   onClose: (e?: React.MouseEvent) => void;
   onConfirm?: (e?: React.MouseEvent) => void;
   title: string;
+  actionColor?: string;
   children: ReactNode;
 }
 
-const Modal: FC<ModalProps> = ({ isOpen, onClose, onConfirm, title, children }) => {
+const Modal: FC<ModalProps> = ({ isOpen, onClose, onConfirm, title, actionColor, children }) => {
   if (!isOpen) return null;
 
   return createPortal(
@@ -18,23 +19,30 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, onConfirm, title, children }) 
       onClick={onClose}
     >
       <article 
-        className="modal-content bg-neutral-500 rounded-lg p-6 max-w-sm w-full mx-4 space-y-6"
+        className="modal-content bg-white rounded-xl p-6 text-neutral-600 max-w-sm w-full mx-4 space-y-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-lg font-medium">{title}</h3>
+        <h3 className="text-lg font-medium text-cyan-600">{title}</h3>
         {children}
         <footer className="flex justify-end gap-4">
           <button 
             onClick={onClose}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800"
+            className="
+              px-4 py-2 rounded-lg border-1 border-cyan-600 text-cyan-600 font-medium
+              hover:text-white hover:bg-cyan-500 hover:cursor-pointer transition-colors
+            "
           >
             Cancel
           </button>
           <button 
             onClick={onConfirm}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            className={`
+              ${actionColor === 'green' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500/90 hover:bg-red-600'}
+              px-4 py-2 text-white font-medium rounded-lg 
+              hover:cursor-pointer transition-colors
+            `}
           >
-            Accept
+            Confirm
           </button>
         </footer>
       </article>

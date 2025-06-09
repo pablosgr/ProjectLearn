@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useUserData } from '../../context/UserContext.tsx';
 import Modal from '../ui/Modal';
+import { Trash } from 'lucide-react';
 
 interface ClassroomCardProps {
     id: string;
@@ -48,7 +49,7 @@ const ClassroomCard: FC<ClassroomCardProps> = ({ id, name, teacherUsername, onDe
         <h2 className="text-xl font-medium line-clamp-2">{name}</h2>
       </div>
       <div className="p-4">
-        <p className="text-gray-600 text-sm h-10">Teacher: {teacherUsername}</p>
+        <p className="text-neutral-500 text-sm h-10">Teacher: {teacherUsername}</p>
       </div>
 
       {(userData?.role === 'admin' || userData?.role === 'teacher') && (
@@ -57,10 +58,13 @@ const ClassroomCard: FC<ClassroomCardProps> = ({ id, name, teacherUsername, onDe
             e.stopPropagation();
             setShowDeleteModal(true);
           }}
-          className="delete-btn absolute top-2 right-2 p-2 hover:bg-red-500 hover:bg-opacity-20 rounded-full"
+          className="
+            delete-btn absolute top-2 right-2 p-2 rounded-lg transition-colors
+            hover:bg-cyan-500 hover:bg-opacity-20 hover:cursor-pointer 
+          "
           title="Delete classroom"
         >
-          🗑️
+          <Trash color='white'/>
         </button>
       )}
 
