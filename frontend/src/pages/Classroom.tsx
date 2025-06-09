@@ -120,13 +120,13 @@ export default function Classroom() {
   };
 
   return (
-    <div className="container h-full mx-auto px-4 py-8">
+    <div className="container h-full mx-auto py-8">
       <div className="flex justify-between flex-wrap gap-6 items-center mb-8">
         <h1 className="text-3xl font-bold">{userData?.role === 'admin' ? 'Classrooms Management' : 'My Classrooms'}</h1>
         {userData?.role === 'teacher' && (
           <button
             onClick={() => setShowCreateModal(true)}
-            className="bg-cyan-600 text-white font-medium flex flex-row gap-3 p-3 rounded-lg hover:bg-cyan-700 transition-colors hover:cursor-pointer"
+            className="bg-cyan-600 text-white font-medium flex flex-row gap-3 py-2 px-3 rounded-lg hover:bg-cyan-700 transition-colors hover:cursor-pointer"
           >
             <Plus strokeWidth={3}/>
             New Class

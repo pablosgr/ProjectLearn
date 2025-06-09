@@ -37,8 +37,8 @@ export default function Layout() {
   }, [checkSession]);
 
   if (!isLogged) {
-    return <div>
-      <p>Please authenticate, redirecting to login..</p>
+    return <div className='w-full h-screen flex items-center justify-center'>
+      <p className='text-3xl font-medium'>Please authenticate, redirecting to login..</p>
     </div>;
   }
 

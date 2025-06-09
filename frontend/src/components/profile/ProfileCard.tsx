@@ -6,7 +6,7 @@ interface ProfileCardProps {
 
 export default function ProfileCard({ children }: ProfileCardProps) {
   return (
-    <div className="bg-neutral-400 rounded-xl shadow-md p-14">
+    <div className="bg-white rounded-xl shadow-lg p-14">
       {children}
     </div>
   );

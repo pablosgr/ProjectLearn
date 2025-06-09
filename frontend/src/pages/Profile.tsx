@@ -100,7 +100,7 @@ export default function Profile() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold mb-8 text-neutral-200">User Profile</h1>
+      <h1 className="text-3xl font-bold py-8">My Profile</h1>
       
       <ProfileCard>
         <ProfileHeader name={userData?.name} role={userData?.role} />

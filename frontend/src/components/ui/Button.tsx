@@ -27,9 +27,9 @@ export default function Button({
   const baseStyles = 'rounded-md font-medium transition-colors';
   
   const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700',
+    primary: 'bg-cyan-600 text-white hover:bg-cyan-700 hover:cursor-pointer',
     secondary: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
-    cancel: 'border border-gray-300 text-gray-700 hover:bg-gray-50',
+    cancel: 'border border-gray-300 text-gray-700 hover:bg-neutral-200 hover:cursor-pointer',
   };
   
   const sizeStyles = {
@@ -47,7 +47,7 @@ export default function Button({
       disabled={disabled || isLoading}
       className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${disabledStyles} ${className}`}
     >
-      {isLoading ? 'Loading...' : children}
+      {isLoading ? ' Saving..' : children}
     </button>
   );
 }
