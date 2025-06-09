@@ -14,7 +14,11 @@ export default function TestSession() {
   const [test, setTest] = useState<TestType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [studentAnswers, setStudentAnswers] = useState<StudentAnswers>({});
+  const [studentAnswers, setStudentAnswers] = useState<StudentAnswers>(() => {
+    // Initialize from localStorage if exists
+    const saved = localStorage.getItem(`test_answers_${testId}`);
+    return saved ? JSON.parse(saved) : {};
+  });
   const [startTime] = useState<string>(new Date().toISOString());
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -43,11 +47,19 @@ export default function TestSession() {
     fetchTest();
   }, [testId]);
 
+  // Clear localStorage after successful submission
+  const clearSavedAnswers = () => {
+    localStorage.removeItem(`test_answers_${testId}`);
+  };
+
   const handleAnswerChange = (questionId: number, optionId: number) => {
-    setStudentAnswers(prev => ({
-      ...prev,
+    const newAnswers = {
+      ...studentAnswers,
       [questionId]: optionId
-    }));
+    };
+    setStudentAnswers(newAnswers);
+    // Save to localStorage
+    localStorage.setItem(`test_answers_${testId}`, JSON.stringify(newAnswers));
   };
 
   const calculateTestResults = (answers: StudentAnswers, test: TestType): TestResult => {
@@ -108,6 +120,8 @@ export default function TestSession() {
 
       if (!response.ok) throw new Error('Failed to submit test');
       
+      // Clear saved answers after successful submission
+      clearSavedAnswers();
       navigate(`/classroom/${classroomId}`);
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'Failed to submit test');
@@ -115,6 +129,16 @@ export default function TestSession() {
       setSubmitting(false);
     }
   };
+
+  // Add cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      // Only clear if test was submitted successfully
+      if (submitting) {
+        clearSavedAnswers();
+      }
+    };
+  }, [submitting, testId]);
 
   if (isLoading) {
     return (
