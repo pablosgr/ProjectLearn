@@ -22,9 +22,50 @@ export default function TestSession() {
   const [startTime] = useState<string>(new Date().toISOString());
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [pageLoading, setPageLoading] = useState(true);
+  const [hasAccess, setHasAccess] = useState(false);
 
+  // Add enrollment check effect
+  useEffect(() => {
+    const checkEnrollment = async () => {
+      if (!userData || !classroomId) return;
+
+      try {
+        // Teachers and admins always have access
+        if (userData.role === 'teacher' || userData.role === 'admin') {
+          setHasAccess(true);
+          return;
+        }
+
+        // Check student enrollment
+        const response = await fetch('/php/classroom/classroom_get_students.php', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: classroomId }),
+        });
+
+        if (!response.ok) throw new Error('Failed to verify enrollment');
+
+        const students = await response.json();
+        const isEnrolled = students.some((student: any) => student.id === userData.id);
+        setHasAccess(isEnrolled);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to verify access');
+        setHasAccess(false);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+
+    checkEnrollment();
+  }, [userData, classroomId]);
+
+  // Modify existing useEffect to depend on hasAccess
   useEffect(() => {
     const fetchTest = async () => {
+      if (!hasAccess) return;
+      
       try {
         const response = await fetch(`/php/test/get_test.php`, {
           method: 'POST',
@@ -44,8 +85,10 @@ export default function TestSession() {
       }
     };
 
-    fetchTest();
-  }, [testId]);
+    if (hasAccess) {
+      fetchTest();
+    }
+  }, [testId, hasAccess]);
 
   // Clear localStorage after successful submission
   const clearSavedAnswers = () => {
@@ -139,6 +182,32 @@ export default function TestSession() {
       }
     };
   }, [submitting, testId]);
+
+  // Add page loading check
+  if (pageLoading) {
+    return (
+      <div className="h-full bg-gray-100 grid place-items-center">
+        <div className="text-center">
+          <div className="animate-spin text-4xl mb-4">↻</div>
+          <p className="text-gray-600">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Add access check
+  if (!hasAccess) {
+    return (
+      <div className="h-full bg-gray-100 p-8">
+        <div className="max-w-4xl mx-auto bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+          <h1 className="text-2xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
+          <p className="text-yellow-700">
+            You don't have access to this test. Please ensure you're enrolled in the classroom.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

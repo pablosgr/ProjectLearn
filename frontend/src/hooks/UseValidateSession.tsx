@@ -4,7 +4,7 @@ import validateSession from '../utils/auth_helper';
 import { useUserData } from '../context/UserContext';
 import getUserData from '../utils/user_helper';
 
-export function useValidateSession(redirectOnFailure = true, redirectDelay = 3000) {
+export function useValidateSession(redirectOnFailure = true, redirectDelay = 2000) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSessionValid, setIsSessionValid] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -31,6 +31,7 @@ export function useValidateSession(redirectOnFailure = true, redirectDelay = 300
       return true;
     } catch (error) {
       console.error('Error validating session:', error);
+      setUserData(null);
       setIsSessionValid(false);
       setIsLogged(false);
       setError(error instanceof Error ? error : new Error('Unknown error'));

@@ -15,6 +15,8 @@ export default function ClassroomDetail() {
   const [activeTab, setActiveTab] = useState<Tab>('tests');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasAccess, setHasAccess] = useState<boolean>(true);
+  const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
     const fetchClassroomDetails = async () => {
@@ -49,6 +51,50 @@ export default function ClassroomDetail() {
     fetchClassroomDetails();
   }, [id]);
 
+  useEffect(() => {
+    const checkAccess = async () => {
+      if (!userData) return;
+
+      try {
+        // If user is teacher, check if they own the classroom
+        if (userData.role === 'teacher') {
+          setHasAccess(classroom?.teacher_id === userData.id);
+          return;
+        }
+
+        // If user is admin, they always have access
+        if (userData.role === 'admin') {
+          setHasAccess(true);
+          return;
+        }
+
+        // If user is student, check if they're enrolled
+        if (userData.role === 'student') {
+          const response = await fetch('/php/classroom/classroom_get_students.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id }),
+          });
+
+          if (!response.ok) throw new Error('Failed to check enrollment');
+
+          const students = await response.json();
+          setHasAccess(students.some((student: any) => student.id === userData.id));
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to verify access');
+        setHasAccess(false);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+
+    if (classroom) {
+      checkAccess();
+    }
+  }, [classroom, userData, id]);
+
   const handleClassUpdate = (newName: string) => {
     setClassroom(prev => prev ? { ...prev, name: newName } : null);
   };
@@ -68,6 +114,34 @@ export default function ClassroomDetail() {
           {error || 'Classroom not found'}
         </p>
       </main>
+    );
+  }
+
+  // Add access check before main content
+  if (!hasAccess) {
+    return (
+      <div className="h-full bg-gray-100 p-8">
+        <div className="max-w-4xl mx-auto bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+          <h1 className="text-2xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
+          <p className="text-yellow-700">
+            {userData?.role === 'teacher' 
+              ? "You don't have permission to view this classroom as you're not the teacher in charge."
+              : "You don't have access to this classroom. Please ensure you're enrolled."}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Add page loading check before other loading states
+  if (pageLoading) {
+    return (
+      <div className="h-full bg-gray-100 grid place-items-center">
+        <div className="text-center">
+          <div className="animate-spin text-4xl mb-4">↻</div>
+          <p className="text-gray-600">Verifying access...</p>
+        </div>
+      </div>
     );
   }
 

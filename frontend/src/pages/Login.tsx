@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { useUserData } from '../context/UserContext.tsx';
@@ -9,8 +9,16 @@ export default function Login() {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const { setUserData, setIsLogged } = useUserData();
+  const [pageLoading, setPageLoading] = useState(true);
+  const { userData, setUserData, setIsLogged } = useUserData();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userData !== null) {
+      navigate('/home');
+    }
+    setPageLoading(false);
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,6 +62,10 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  if (pageLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>

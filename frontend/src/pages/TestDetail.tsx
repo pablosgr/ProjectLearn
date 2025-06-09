@@ -13,6 +13,7 @@ export default function TestDetail() {
     const [error, setError] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [saveState, setSaveState] = useState<{ type: string, message: string } | null>(null);
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchTestDetail = async () => {
@@ -36,7 +37,18 @@ export default function TestDetail() {
                     throw new Error('Test not found');
                 }
 
-                setTest(data[0]);
+                const testData = data[0];
+
+                // Validate author credentials for teacher role
+                if (userData?.role === 'teacher' && 
+                    (testData.author_name !== userData.name || 
+                     testData.author_username !== userData.username)) {
+                    setValidationError('You do not have permission to view this test.');
+                } else {
+                    setValidationError(null);
+                }
+
+                setTest(testData);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'An error occurred');
                 console.error('Error fetching test details:', err);
@@ -46,7 +58,7 @@ export default function TestDetail() {
         };
 
         fetchTestDetail();
-    }, [id]);
+    }, [id, userData]);
 
     const isTeacher = userData?.role === 'teacher' && userData?.username === test?.author_username;
 
@@ -129,6 +141,16 @@ export default function TestDetail() {
                     {error || 'Test not found'}
                 </p>
             </main>
+        );
+    }
+
+    // Add validation error check after loading check
+    if (validationError) {
+        return (
+            <div className="max-w-4xl mx-auto bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                <h1 className="text-2xl font-medium text-red-800 mb-2">Access Denied</h1>
+                <p className="text-red-700">{validationError}</p>
+            </div>
         );
     }
 

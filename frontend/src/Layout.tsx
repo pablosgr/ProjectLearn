@@ -18,23 +18,16 @@ export default function Layout() {
         throw new Error('Network response failed');
       }
 
-      navigate('/login');
-
     } catch (error) {
       console.error('Error loging out:', error);
     }
   }
 
   const handleLogout = () => {
-    setIsLogged(false);
-    setUserData({
-      id: null,
-      name: null,
-      username: null,
-      email: null,
-      role: null
-    });
     logout();
+    setUserData(null);
+    setIsLogged(false);
+    navigate('/login');
   }
 
   useEffect(() => {
