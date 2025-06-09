@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router';
-import { useUserData } from '../context/UserContext.tsx';
+import { useValidateSession } from '../hooks/UseValidateSession.tsx';
 import { Link } from 'react-router';
 
 export default function Login() {
@@ -10,15 +10,25 @@ export default function Login() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [pageLoading, setPageLoading] = useState(true);
-  const { userData, setUserData, setIsLogged } = useUserData();
+  const { checkSession } = useValidateSession();
   const navigate = useNavigate();
 
+  const validateSession = async () => {
+    const isValid = await checkSession();
+    return isValid;
+  }
+
   useEffect(() => {
-    if (userData !== null) {
-      navigate('/home');
-    }
-    setPageLoading(false);
-  }, []);
+    const init = async () => {
+      const isValid = await validateSession();
+      if (isValid) {
+        navigate('/home', { replace: true });
+      }
+      setPageLoading(false);
+    };
+
+    init();
+  }, [navigate, checkSession]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,15 +53,6 @@ export default function Login() {
       
       setUsername('');
       setPassword('');
-
-      setIsLogged(true);
-      setUserData({
-        id: data.user.id,
-        name: data.user.name,
-        username: data.user.username,
-        email: data.user.email,
-        role: data.user.role,
-      });
 
       navigate('/home');
       
