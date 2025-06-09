@@ -55,7 +55,7 @@ export default function TestCard({ test, onDelete }: { test: TestType, onDelete?
         </div>
       </div>
 
-      {(userData?.role === 'teacher') && onDelete && (
+      {(userData?.role === 'teacher' || userData?.role === 'admin') && onDelete && (
         <button
           onClick={(e) => {
             e.stopPropagation();

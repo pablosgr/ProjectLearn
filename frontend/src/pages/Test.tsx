@@ -4,17 +4,23 @@ import type { TestType } from '../types/test-type';
 import TestCard from '../components/test/TestCard';
 import CreateTestModal from '../components/test/CreateTestModal';
 import GenerateTestModal from '../components/test/GenerateTestModal';
+import CategoryModal from '../components/test/CategoryModal';
 
 export default function Test() {
     const { userData } = useUserData();
     const [tests, setTests] = useState<TestType[]>([]);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showGenerateModal, setShowGenerateModal] = useState(false);
+    const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchTests = async () => {
         try {
-            const response = await fetch('/php/test/teacher_get_tests.php', {
+            const endpoint = userData?.role === 'admin' 
+                ? '/php/test/get_all_tests.php' 
+                : '/php/test/teacher_get_tests.php';
+
+            const response = await fetch(endpoint, {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -51,7 +57,7 @@ export default function Test() {
         }
     };
 
-    if (userData?.role !== 'teacher') {
+    if (!userData || (userData.role !== 'teacher' && userData.role !== 'admin')) {
         return (
             <div className="container mx-auto px-4 py-8">
                 <h1 className="text-3xl font-bold mb-4">Tests</h1>
@@ -63,40 +69,65 @@ export default function Test() {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">My Tests</h1>
-                <div className="flex gap-4">
+                <h1 className="text-3xl font-bold">
+                    {userData.role === 'admin' ? 'Test Management' : 'My Tests'}
+                </h1>
+                {userData.role === 'admin' ? (
                     <button
-                        onClick={() => setShowGenerateModal(true)}
-                        className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                        onClick={() => setShowCategoryModal(true)}
+                        className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
                     >
-                        🤖 AI Generate
+                        ➕ Manage Categories
                     </button>
-                    <button
-                        onClick={() => setShowCreateModal(true)}
-                        className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
-                    >
-                        ➕ New Test
-                    </button>
-                </div>
+                ) : (
+                    userData.role === 'teacher' && (
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => setShowGenerateModal(true)}
+                                className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                            >
+                                🤖 AI Generate
+                            </button>
+                            <button
+                                onClick={() => setShowCreateModal(true)}
+                                className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+                            >
+                                ➕ New Test
+                            </button>
+                        </div>
+                    )
+                )}
             </div>
 
-            <CreateTestModal
-                isOpen={showCreateModal}
-                onClose={() => setShowCreateModal(false)}
-                onSuccess={() => {
-                    fetchTests();
-                    setShowCreateModal(false);
-                }}
-            />
+            {userData.role === 'admin' && (
+                <CategoryModal
+                    isOpen={showCategoryModal}
+                    onClose={() => setShowCategoryModal(false)}
+                    onSuccess={() => setShowCategoryModal(false)}
+                />
+            )}
 
-            <GenerateTestModal
-                isOpen={showGenerateModal}
-                onClose={() => setShowGenerateModal(false)}
-                onSuccess={() => {
-                    fetchTests();
-                    setShowGenerateModal(false);
-                }}
-            />
+            {userData.role === 'teacher' && (
+                <>
+                    <CreateTestModal
+                        isOpen={showCreateModal}
+                        onClose={() => setShowCreateModal(false)}
+                        onSuccess={() => {
+                            fetchTests();
+                            setShowCreateModal(false);
+                        }}
+                    />
+
+                    <GenerateTestModal
+                        isOpen={showGenerateModal}
+                        onClose={() => setShowGenerateModal(false)}
+                        onSuccess={() => {
+                            fetchTests();
+                            setShowGenerateModal(false);
+                        }}
+                    />
+                </>
+            )}
 
             {isLoading ? (
                 <div className="flex justify-center items-center">

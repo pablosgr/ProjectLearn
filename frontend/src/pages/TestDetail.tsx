@@ -102,6 +102,18 @@ export default function TestDetail() {
         }
     };
 
+    // Add role check before main content
+    if (!userData || (userData.role !== 'teacher' && userData.role !== 'admin')) {
+        return (
+            <div className="max-w-4xl mx-auto bg-orange-200 border border-orange-400 rounded-lg p-6 text-center">
+                <h1 className="text-2xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
+                <p className="text-yellow-700">
+                    Sorry, only teachers and administrators can access test details.
+                </p>
+            </div>
+        );
+    }
+
     if (isLoading) {
         return (
             <main className="h-40 rounded-lg bg-gray-100 grid place-items-center">
@@ -144,51 +156,77 @@ export default function TestDetail() {
                 </section>
             </header>
 
-            <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Settings Section */}
-                {userData?.role === 'teacher' && (
-                    <div className="lg:col-span-1">
-                        <TestSettings 
-                            test={test}
-                            onUpdate={handleTestSettingsUpdate}
-                        />
+            <div className="max-w-7xl mx-auto px-6 py-8">
+                {userData?.role === 'admin' ? (
+                    <div className="bg-white rounded-lg p-6 shadow">
+                        <h2 className="text-xl font-medium text-gray-900 mb-4">Test Information</h2>
+                        <dl className="grid grid-cols-1 gap-4">
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500">Name</dt>
+                                <dd className="text-base text-gray-900">{test.name}</dd>
+                            </div>
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500">Category</dt>
+                                <dd className="text-base text-gray-900">{test.category}</dd>
+                            </div>
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500">Author</dt>
+                                <dd className="text-base text-gray-900">{test.author_name} ({test.author_username})</dd>
+                            </div>
+                            <div>
+                                <dt className="text-sm font-medium text-gray-500">Total Questions</dt>
+                                <dd className="text-base text-gray-900">{test.questions?.length || 0}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Settings Section */}
+                        {userData?.role === 'teacher' && (
+                            <div className="lg:col-span-1">
+                                <TestSettings 
+                                    test={test}
+                                    onUpdate={handleTestSettingsUpdate}
+                                />
+                            </div>
+                        )}
+
+                        {/* Questions Section */}
+                        <div className={`${userData?.role === 'teacher' ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+                            <TestQuestions
+                                questions={test.questions}
+                                onQuestionsUpdate={handleQuestionsUpdate}
+                                isTeacher={isTeacher}
+                            />
+                            
+                            {isTeacher && (
+                                <div className="mt-8 flex justify-end">
+                                    {saveState && (
+                                        <p className={`text-sm ${ saveState.type === 'error' ? 'text-red-600' : 'text-green-600' }`}>
+                                            {saveState.message}
+                                        </p>
+                                    )}
+                                    <button
+                                        onClick={handleSaveTest}
+                                        disabled={isSaving}
+                                        className={`px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 
+                                            disabled:opacity-50 disabled:cursor-not-allowed font-medium
+                                            flex items-center gap-2`}
+                                    >
+                                        {isSaving ? (
+                                            <>
+                                                <span className="animate-spin">↻</span>
+                                                Saving...
+                                            </>
+                                        ) : (
+                                            'Save Changes'
+                                        )}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
-
-                {/* Questions Section */}
-                <div className={`${userData?.role === 'teacher' ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
-                    <TestQuestions
-                        questions={test.questions}
-                        onQuestionsUpdate={handleQuestionsUpdate}
-                        isTeacher={isTeacher}
-                    />
-                    
-                    {isTeacher && (
-                        <div className="mt-8 flex justify-end">
-                            {saveState && (
-                                <p className={`text-sm ${ saveState.type === 'error' ? 'text-red-600' : 'text-green-600' }`}>
-                                    {saveState.message}
-                                </p>
-                            )}
-                            <button
-                                onClick={handleSaveTest}
-                                disabled={isSaving}
-                                className={`px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 
-                                    disabled:opacity-50 disabled:cursor-not-allowed font-medium
-                                    flex items-center gap-2`}
-                            >
-                                {isSaving ? (
-                                    <>
-                                        <span className="animate-spin">↻</span>
-                                        Saving...
-                                    </>
-                                ) : (
-                                    'Save Changes'
-                                )}
-                            </button>
-                        </div>
-                    )}
-                </div>
             </div>
         </main>
     );

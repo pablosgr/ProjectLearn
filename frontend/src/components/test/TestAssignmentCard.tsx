@@ -21,7 +21,7 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(userData?.role !== 'admin');
   const [hasResult, setHasResult] = useState<boolean>(false);
 
   const handleDelete = async () => {
@@ -39,6 +39,9 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
   };
 
   const checkForResults = async () => {
+    // Skip fetching results if user is admin
+    if (userData?.role === 'admin') return;
+    
     setIsLoading(true);
 
     try {
@@ -73,8 +76,11 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
   };
 
   useEffect(() => {
-    checkForResults();
-  }, []);
+    // Only check results if not admin
+    if (userData?.role !== 'admin') {
+      checkForResults();
+    }
+  }, [userData?.role]);
 
   const isPastDue = () => {
     if (!test.due_date) return false;
@@ -145,7 +151,7 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
         )}
 
         <div className="mt-4 flex justify-end">
-          {!isLoading && (
+          {!isLoading && userData?.role !== 'admin' && (
             <>
               {(userData?.role === 'teacher' || hasResult || !isPastDue()) && (
                 <button

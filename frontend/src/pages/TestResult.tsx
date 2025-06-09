@@ -41,9 +41,6 @@ export default function TestResult() {
         if (!response.ok) throw new Error('Failed to fetch results');
 
         const data = await response.json();
-
-        console.log('Request data:', requestBody);
-        console.log('Fetched results:', data);
         
         // Ensure data is an array
         const resultsArray = Array.isArray(data) ? data : [data];
