@@ -3,6 +3,7 @@ import { useState } from 'react';
 import type { UserData } from '../../types/user-context-type';
 import { useUserData } from '../../context/UserContext';
 import Modal from '../ui/Modal';
+import { Trash } from 'lucide-react';
 
 interface UserCardProps {
   user: UserData;
@@ -52,10 +53,10 @@ const UserCard: FC<UserCardProps> = ({ user, onDelete }) => {
               setShowDeleteModal(true);
               setError(null);
             }}
-            className="text-red-600 hover:text-red-800 p-2 hover:cursor-pointer"
+            className="text-red-400 hover:bg-red-200 rounded-lg p-2 hover:cursor-pointer transition-colors"
             title="Delete user"
           >
-            ❌
+            <Trash size={22} />
           </button>
         )}
       </li>
@@ -69,9 +70,8 @@ const UserCard: FC<UserCardProps> = ({ user, onDelete }) => {
         onConfirm={handleDelete}
         title="Delete User"
       >
-        <p className="text-neutral-200">
+        <p className="text-neutral-600">
           Are you sure you want to delete user <strong>{user.name}</strong>?
-          <br />
           This action cannot be undone.
         </p>
       </Modal>

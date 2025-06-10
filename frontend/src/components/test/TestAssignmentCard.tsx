@@ -3,6 +3,7 @@ import { useUserData } from '../../context/UserContext';
 import { useNavigate } from 'react-router';
 import Modal from '../ui/Modal';
 import type { AssignedTest } from '../../types/test-type';
+import { Trash } from 'lucide-react';
 
 interface TestAssignmentCardProps {
   classroomId: string;
@@ -89,7 +90,7 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+      <article className="bg-white rounded-lg shadow p-4 border border-gray-200">
         <div className="flex justify-between items-start">
           <h3 className="text-lg text-black font-semibold mb-2">
             {test.test_name} - {test.test_category}
@@ -100,57 +101,31 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
                 setShowDeleteModal(true);
                 setError(null);
               }}
-              className="text-red-600 hover:text-red-800 p-2 hover:cursor-pointer"
+              className="text-red-400 hover:bg-red-200 rounded-lg p-2 hover:cursor-pointer transition-colors"
               title="Remove assignment"
             >
-              ❌
+              <Trash size={22} />
             </button>
           )}
         </div>
 
-        <div className="text-sm text-gray-600 space-y-1">
-          {test.unit_name && (
-            <p>Unit: {test.unit_name}</p>
-          )}
-          <p>Assigned: {new Date(test.assigned_at).toLocaleDateString()}</p>
-          {test.due_date && (
-            <div className="flex items-center gap-2">
-              <p>Due: {new Date(test.due_date).toLocaleDateString()}</p>
-              {isPastDue() && !hasResult && (
-                <span className="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
-                  Past Due
-                </span>
-              )}
-            </div>
-          )}
-          {test.time_limit && (
-            <p>Time limit: {test.time_limit} minutes</p>
-          )}
-          {userData?.role === 'teacher' && (
-            <div className="flex gap-2 mt-2">
-              <span className={`px-2 py-1 rounded-full text-xs ${
-                test.visibility 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
-                {test.visibility ? 'Visible' : 'Hidden'}
-              </span>
-              <span className={`px-2 py-1 rounded-full text-xs ${
-                test.is_mandatory 
-                  ? 'bg-red-100 text-red-800' 
-                  : 'bg-blue-100 text-blue-800'
-              }`}>
-                {test.is_mandatory ? 'Mandatory' : 'Optional'}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {error && (
-          <p className="text-red-500 text-xs mt-2">{error}</p>
-        )}
-
-        <div className="mt-4 flex justify-end">
+        <div className="text-sm text-gray-600 space-y-1 flex flex-row justify-between items-end">
+          <div className='pt-5'>
+            <p>Assigned: {new Date(test.assigned_at).toLocaleDateString()}</p>
+            {test.due_date && (
+              <div className="flex items-center gap-2">
+                <p>Due: {new Date(test.due_date).toLocaleDateString()}</p>
+                {isPastDue() && !hasResult && (
+                  <span className="px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+                    Past Due
+                  </span>
+                )}
+              </div>
+            )}
+            {test.time_limit && (
+              <p>Time limit: {test.time_limit} minutes</p>
+            )}
+          </div>
           {!isLoading && userData?.role !== 'admin' && (
             <>
               {(userData?.role === 'teacher' || hasResult || !isPastDue()) && (
@@ -160,7 +135,7 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
                       ? `/test-result/${test.test_id}/classroom/${classroomId}` 
                       : `/test-session/${test.test_id}/classroom/${classroomId}`
                   )}
-                  className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
+                  className="px-4 py-2 bg-cyan-600 text-white font-medium rounded-lg hover:bg-cyan-700 hover:cursor-pointer transition-colors"
                 >
                   {userData?.role === 'teacher' 
                     ? 'View Results'
@@ -173,7 +148,11 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
             </>
           )}
         </div>
-      </div>
+
+        {error && (
+          <p className="text-red-500 text-xs mt-2">{error}</p>
+        )}
+      </article>
 
       <Modal
         isOpen={showDeleteModal}
@@ -184,7 +163,7 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
         onConfirm={handleDelete}
         title="Remove Test Assignment"
       >
-        <p className="text-neutral-200">
+        <p className="text-neutral-600">
           Are you sure you want to remove <strong>{test.test_name}</strong> from this classroom?
           <br />
           This action cannot be undone.

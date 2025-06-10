@@ -1,6 +1,9 @@
 import type { FC } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router';
+import { Copy } from 'lucide-react';
+import { CopyCheck } from 'lucide-react';
+
 
 interface ClassroomSettingsProps {
   currentName: string;
@@ -31,6 +34,7 @@ const ClassroomSettings: FC<ClassroomSettingsProps> = ({ currentName, onUpdate }
     setSuccess(false);
     if (name.trim() === '') {
       setError('Class name cannot be empty');
+      setTimeout(() => setError(null), 2000);
       return;
     }
     setError(null);
@@ -53,6 +57,7 @@ const ClassroomSettings: FC<ClassroomSettingsProps> = ({ currentName, onUpdate }
       }
 
       setSuccess(true);
+      setTimeout(() => setSuccess(false), 2000);
       onUpdate(name);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update classroom');
@@ -62,19 +67,17 @@ const ClassroomSettings: FC<ClassroomSettingsProps> = ({ currentName, onUpdate }
   return (
     <article className="bg-white rounded-lg shadow-sm p-6">
       <h2 className="text-xl text-neutral-900 font-medium mb-6">Class Settings</h2>
-      
-      {/* Class name form */}
-      <form onSubmit={handleSubmit} className="max-w-md space-y-4 mb-8">
+      <form onSubmit={handleSubmit} className="text-neutral-600 max-w-md space-y-4 mb-8">
         <div>
-          <label htmlFor="className" className="block text-sm font-medium text-gray-700 mb-1">
-            Class Name
+          <label htmlFor="className" className="block text-md font-medium text-gray-700 mb-1">
+            New class name
           </label>
           <input
             type="text"
             id="className"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border-1 bg-neutral-400 border-neutral-400 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full p-2 border-1 border-neutral-500 rounded focus:outline-none focus:ring-2 focus:ring-cyan-500"
           />
         </div>
 
@@ -83,14 +86,13 @@ const ClassroomSettings: FC<ClassroomSettingsProps> = ({ currentName, onUpdate }
 
         <button
           type="submit"
-          className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 transition-colors"
+          className="bg-cyan-600 text-white px-4 py-2 rounded hover:bg-cyan-700 hover:cursor-pointer transition-colors"
         >
           Save Changes
         </button>
       </form>
 
-      {/* Enrollment link section */}
-      <div className="border-t pt-6">
+      <div className="border-t border-neutral-400 pt-6">
         <h3 className="text-lg text-neutral-900 font-medium mb-4">Student Enrollment</h3>
         <div className="max-w-md space-y-2">
           <p className="text-sm text-gray-600">
@@ -101,14 +103,14 @@ const ClassroomSettings: FC<ClassroomSettingsProps> = ({ currentName, onUpdate }
               type="text"
               readOnly
               value={enrollmentLink}
-              className="flex-1 p-2 bg-neutral-400 border rounded text-sm"
+              className="text-neutral-500 flex-1 p-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
             />
             <button
               onClick={handleCopyLink}
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+              className="px-2 py-2 text-cyan-600 rounded-lg hover:bg-cyan-200/60 hover:cursor-pointer transition-colors"
               title="Copy link"
             >
-              {copySuccess ? '✅' : '📋'}
+              {copySuccess ? <CopyCheck /> : <Copy />}
             </button>
           </div>
           {copySuccess && (

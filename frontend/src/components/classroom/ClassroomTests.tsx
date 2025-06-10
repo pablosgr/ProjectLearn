@@ -4,6 +4,7 @@ import { useUserData } from '../../context/UserContext';
 import AssignTestModal from '../test/AssignTestModal';
 import TestAssignmentCard from '../test/TestAssignmentCard';
 import type { AssignedTest } from '../../types/test-type';
+import { LoaderCircle, Plus } from 'lucide-react';
 
 export default function ClassroomTests() {
   const { id: classroomId } = useParams<{ id: string }>();
@@ -77,11 +78,12 @@ export default function ClassroomTests() {
 
   if (isLoading) {
     return (
-      <article className="bg-white rounded-lg shadow-sm p-6">
-        <div className="h-40 rounded-lg bg-gray-100 grid place-items-center">
-          <div className="text-gray-500">Loading tests...</div>
+      <section className="flex h-full justify-center items-center">
+        <div className="text-gray-600 p-10 flex flex-col items-center gap-4">
+          <LoaderCircle className="animate-spin" color='#5d8297' size={45} />
+          <span className='text-[#5d8297] text-md font-medium'>Loading tests..</span>
         </div>
-      </article>
+      </section>
     );
   }
 
@@ -96,9 +98,10 @@ export default function ClassroomTests() {
         {userData?.role === 'teacher' && (
           <button
             onClick={() => setShowAssignModal(true)}
-            className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+            className="bg-cyan-600 text-white font-medium flex flex-row gap-3 py-2 px-3 rounded-lg hover:bg-cyan-700 transition-colors hover:cursor-pointer"
           >
-            ➕ Assign New Test
+            <Plus strokeWidth={3}/>
+            Assign test
           </button>
         )}
       </div>
@@ -112,7 +115,7 @@ export default function ClassroomTests() {
       />
 
       {tests.length > 0 ? (
-        <div className="grid gap-4">
+        <div className="flex flex-col gap-6">
           {tests.map((test) => (
             <TestAssignmentCard
               key={test.test_id}

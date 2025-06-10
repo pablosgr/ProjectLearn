@@ -3,6 +3,7 @@ import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import type { UserData } from '../../types/user-context-type';
 import UserCard from './UserCard';
+import { LoaderCircle } from 'lucide-react';
 
 const ClassroomStudents: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -78,11 +79,12 @@ const ClassroomStudents: FC = () => {
 
   if (isLoading) {
     return (
-      <article className="bg-white rounded-lg shadow-sm p-6">
-        <div className="grid place-items-center py-12">
-          <p className="text-gray-500">Loading students...</p>
+      <section className="flex h-full justify-center items-center">
+        <div className="text-gray-600 p-10 flex flex-col items-center gap-4">
+          <LoaderCircle className="animate-spin" color='#5d8297' size={45} />
+          <span className='text-[#5d8297] text-md font-medium'>Loading students..</span>
         </div>
-      </article>
+      </section>
     );
   }
 

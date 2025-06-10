@@ -146,9 +146,9 @@ export default function ClassroomDetail() {
   }
 
   return (
-    <main className="bg-gray-100 rounded-lg overflow-hidden h-full">
+    <div className="bg-[#f1f5fa] shadow-lg rounded-2xl overflow-x-hidden h-full mb-20">
       <header className="bg-cyan-600 text-white">
-        <section className="max-w-7xl mx-auto px-6 pt-4">
+        <section className="max-w-7xl mx-auto px-9 pt-7">
           <div className="flex justify-between items-start mb-4">
             <hgroup>
               <h1 className="text-3xl font-medium mb-1">{classroom.name}</h1>
@@ -166,7 +166,7 @@ export default function ClassroomDetail() {
           <nav className="flex gap-8 text-sm font-medium">
             <button 
               onClick={() => setActiveTab('tests')}
-              className={`py-4 ${
+              className={`py-4 hover:cursor-pointer ${
                 activeTab === 'tests'
                   ? 'border-b-2 border-white text-white'
                   : 'text-white/75 hover:text-white'
@@ -176,7 +176,7 @@ export default function ClassroomDetail() {
             </button>
             <button 
               onClick={() => setActiveTab('students')}
-              className={`py-4 ${
+              className={`py-4 hover:cursor-pointer ${
                 activeTab === 'students'
                   ? 'border-b-2 border-white text-white'
                   : 'text-white/75 hover:text-white'
@@ -187,13 +187,13 @@ export default function ClassroomDetail() {
             {userData?.role !== 'student' && (
               <button 
                 onClick={() => setActiveTab('settings')}
-                className={`py-4 ${
+                className={`py-4 hover:cursor-pointer ${
                   activeTab === 'settings'
                     ? 'border-b-2 border-white text-white'
                     : 'text-white/75 hover:text-white'
                 }`}
               >
-                Settings ⚙️
+                Settings
               </button>
             )}
           </nav>
@@ -213,6 +213,6 @@ export default function ClassroomDetail() {
           />
         )}
       </section>
-    </main>
+    </div>
   );
 }

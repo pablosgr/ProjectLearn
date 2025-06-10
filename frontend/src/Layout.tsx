@@ -68,11 +68,11 @@ export default function Layout() {
         </nav>
       </header>
 
-      <main>
+      <main className='w-full h-[calc(100vh-80px)] overflow-y-auto'>
         {
           isLoading && (
-            <div className='px-[18%] pt-10 w-full h-full flex items-center justify-center'>
-              <span className='pt-80 flex flex-col items-center gap-4'>
+            <div className='px-[18%] w-full h-full flex items-center justify-center'>
+              <span className='flex flex-col items-center gap-4'>
                 <LoaderCircle className='animate-spin' size={50} />
                 <p className='text-lg font-medium'>Loading..</p>
               </span>
