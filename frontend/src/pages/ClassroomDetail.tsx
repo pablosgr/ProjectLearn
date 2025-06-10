@@ -5,6 +5,7 @@ import ClassroomTests from '../components/classroom/ClassroomTests';
 import ClassroomStudents from '../components/classroom/ClassroomStudents';
 import ClassroomSettings from '../components/classroom/ClassroomSettings';
 import type { ClassroomType } from '../types/classroom-type';
+import { LoaderCircle } from 'lucide-react';
 
 type Tab = 'tests' | 'students' | 'settings';
 
@@ -101,52 +102,52 @@ export default function ClassroomDetail() {
 
   if (isLoading) {
     return (
-      <main className="h-40 rounded-lg bg-gray-100 grid place-items-center">
-        <p className="text-gray-600">Loading classroom details...</p>
-      </main>
+      <div className='w-full pt-20 flex items-center justify-center'>
+        <span className='flex flex-col items-center gap-4'>
+          <LoaderCircle className='animate-spin' size={50} />
+          <p className='text-lg font-medium'>Loading classroom details..</p>
+        </span>
+      </div>
     );
   }
 
   if (error || !classroom) {
     return (
-      <main className="min-h-screen bg-gray-100 p-8">
-        <p className="max-w-4xl mx-auto bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error || 'Classroom not found'}
+      <div className="max-w-4xl mx-auto mt-20 p-8 bg-red-200 rounded-2xl border-1 border-red-500 flex items-center justify-center">
+        <p className="text-red-500 text-lg font-medium">
+          Classroom not found
         </p>
-      </main>
+      </div>
     );
   }
 
   // Add access check before main content
   if (!hasAccess) {
     return (
-      <div className="h-full bg-gray-100 p-8">
-        <div className="max-w-4xl mx-auto bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-          <h1 className="text-2xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
+        <div className="mt-20 max-w-4xl mx-auto bg-orange-200 border border-orange-500 rounded-2xl p-6 text-center">
+          <h1 className="text-xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
           <p className="text-yellow-700">
             {userData?.role === 'teacher' 
               ? "You don't have permission to view this classroom as you're not the teacher in charge."
               : "You don't have access to this classroom. Please ensure you're enrolled."}
           </p>
         </div>
-      </div>
     );
   }
 
-  // Add page loading check before other loading states
   if (pageLoading) {
     return (
-      <div className="h-full bg-gray-100 grid place-items-center">
-        <div className="text-center">
-          <div className="animate-spin text-4xl mb-4">↻</div>
-          <p className="text-gray-600">Verifying access...</p>
-        </div>
+      <div className='w-full pt-20 flex items-center justify-center'>
+        <span className='flex flex-col items-center gap-4'>
+          <LoaderCircle className='animate-spin' size={50} />
+          <p className='text-lg font-medium'>Loading..</p>
+        </span>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#f1f5fa] shadow-lg rounded-2xl overflow-x-hidden h-full mb-20">
+    <div className="bg-[#f1f5fa] shadow-lg rounded-2xl overflow-x-hidden h-fit mt-10">
       <header className="bg-cyan-600 text-white">
         <section className="max-w-7xl mx-auto px-9 pt-7">
           <div className="flex justify-between items-start mb-4">

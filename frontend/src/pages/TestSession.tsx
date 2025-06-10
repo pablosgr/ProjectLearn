@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useUserData } from '../context/UserContext';
 import type { TestType, TestResult } from '../types/test-type';
+import { LoaderCircle } from 'lucide-react';
 
 interface StudentAnswers {
   [questionId: number]: number;
@@ -186,11 +187,11 @@ export default function TestSession() {
   // Add page loading check
   if (pageLoading) {
     return (
-      <div className="h-full bg-gray-100 grid place-items-center">
-        <div className="text-center">
-          <div className="animate-spin text-4xl mb-4">↻</div>
-          <p className="text-gray-600">Verifying access...</p>
-        </div>
+      <div className='w-full pt-20 flex items-center justify-center'>
+        <span className='flex flex-col items-center gap-4'>
+          <LoaderCircle className='animate-spin' size={50} />
+          <p className='text-lg font-medium'>Verifying test access..</p>
+        </span>
       </div>
     );
   }
@@ -198,41 +199,38 @@ export default function TestSession() {
   // Add access check
   if (!hasAccess) {
     return (
-      <div className="h-full bg-gray-100 p-8">
-        <div className="max-w-4xl mx-auto bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-          <h1 className="text-2xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
+        <div className="mt-20 max-w-4xl mx-auto bg-orange-200 border border-orange-500 rounded-2xl p-6 text-center">
+          <h1 className="text-xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
           <p className="text-yellow-700">
             You don't have access to this test. Please ensure you're enrolled in the classroom.
           </p>
         </div>
-      </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-          <div className="space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </div>
+      <div className='w-full pt-20 flex items-center justify-center'>
+        <span className='flex flex-col items-center gap-4'>
+          <LoaderCircle className='animate-spin' size={50} />
+          <p className='text-lg font-medium'>Loading test..</p>
+        </span>
       </div>
     );
   }
 
   if (error || !test) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <p className="text-red-600">{error || 'Test not found'}</p>
+      <div className="max-w-4xl mx-auto mt-20 p-8 bg-red-200 rounded-2xl border-1 border-red-500 flex items-center justify-center">
+        <p className="text-red-500 text-lg font-medium">
+          Test not found
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-100 h-full py-8">
+    <div className="bg-[#f1f5fa] shadow-lg rounded-2xl h-fit mt-10 py-8">
       <div className="max-w-7xl mx-auto px-6">
         <header className="bg-cyan-600 rounded-lg shadow-sm p-6 mb-8">
           <h1 className="text-3xl font-bold text-white">
@@ -300,12 +298,13 @@ export default function TestSession() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 
-                  disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 py-2 bg-cyan-600 text-white font-medium rounded-lg hover:bg-cyan-700 
+                  disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:cursor-pointer 
+                  transition-colors"
               >
                 {submitting ? (
                   <>
-                    <span className="animate-spin">↻</span>
+                    <LoaderCircle className="animate-spin" size={20} />
                     Submitting...
                   </>
                 ) : (

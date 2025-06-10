@@ -59,9 +59,11 @@ export default function Test() {
 
     if (!userData || (userData.role !== 'teacher' && userData.role !== 'admin')) {
         return (
-            <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold mb-4">Tests</h1>
-                <p className="text-gray-600">You are not authorized to view this page.</p>
+            <div className="mt-20 max-w-4xl mx-auto bg-orange-200 border border-orange-500 rounded-2xl p-6 text-center">
+                <h1 className="text-xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
+                <p className="text-yellow-700">
+                    You don't have access to this page.
+                </p>
             </div>
         );
     }

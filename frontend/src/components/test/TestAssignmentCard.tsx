@@ -90,7 +90,7 @@ export default function TestAssignmentCard({ classroomId, test, onDelete }: Test
 
   return (
     <>
-      <article className="bg-white rounded-lg shadow p-4 border border-gray-200">
+      <article className="flex flex-col bg-white rounded-lg shadow p-4 border border-gray-200">
         <div className="flex justify-between items-start">
           <h3 className="text-lg text-black font-semibold mb-2">
             {test.test_name} - {test.test_category}

@@ -71,17 +71,17 @@ export default function Layout() {
       <main className='w-full h-[calc(100vh-80px)] overflow-y-auto'>
         {
           isLoading && (
-            <div className='px-[18%] w-full h-full flex items-center justify-center'>
+            <div className='px-[18%] pt-30 w-full h-fit flex items-center justify-center'>
               <span className='flex flex-col items-center gap-4'>
                 <LoaderCircle className='animate-spin' size={50} />
-                <p className='text-lg font-medium'>Loading..</p>
+                <p className='text-lg font-medium'>Authenticating..</p>
               </span>
             </div>
           )
         }
         {
           !isLoading && (
-            <div className='px-[18%] pt-10 w-full'>
+            <div className='px-[18%] pt-10 mb-20 w-full h-fit'>
               <Outlet />
             </div>
           )
