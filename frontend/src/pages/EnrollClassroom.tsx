@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useUserData } from '../context/UserContext';
+import { LoaderCircle } from 'lucide-react';
+import { CircleAlert } from 'lucide-react';
 
 export default function EnrollClassroom() {
   const { id } = useParams<{ id: string }>();
@@ -47,19 +49,25 @@ export default function EnrollClassroom() {
 
   if (isLoading) {
     return (
-      <main className="h-full grid place-items-center">
-        <p className="text-gray-600">Enrolling in classroom...</p>
-      </main>
+      <div className="
+        h-full w-full flex flex-row items-center justify-center gap-8 place-items-center 
+        bg-green-200 border-green-700 border-1 rounded-2xl p-8
+      ">
+        <LoaderCircle className="animate-spin" size={42} color='#3fa151' />
+        <p className="text-green-700 text-xl">Enrolling in classroom...</p>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <main className="h-full grid place-items-center">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      </main>
+      <div className="
+        h-full w-full flex flex-row items-center justify-center gap-8 place-items-center 
+        bg-red-200 border-red-700 border-1 rounded-2xl p-8
+      ">
+        <CircleAlert size={42} color='red' />
+        <p className="text-red-700 text-xl">{error}</p>
+      </div>
     );
   }
 
