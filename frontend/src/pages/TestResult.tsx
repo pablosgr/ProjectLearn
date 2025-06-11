@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useUserData } from '../context/UserContext';
 import type { TestResultResponse } from '../types/test-type';
+import { LoaderCircle } from 'lucide-react';
 
 interface TestResultSummary {
   averageScore: number;
@@ -81,14 +82,11 @@ export default function TestResult() {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-          <div className="space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </div>
+      <div className='w-full pt-20 flex items-center justify-center'>
+        <span className='flex flex-col items-center gap-4'>
+          <LoaderCircle className='animate-spin' size={50} />
+          <p className='text-lg font-medium'>Loading test result..</p>
+        </span>
       </div>
     );
   }
@@ -102,8 +100,7 @@ export default function TestResult() {
   }
 
   return (
-    <main className="bg-gray-100 h-full py-8">
-      <div className="max-w-7xl mx-auto px-6">
+      <section className="max-w-7xl mt-20 mx-auto px-6">
         {userData?.role === 'teacher' ? (
           <>
             <header className="bg-white rounded-lg shadow-sm p-6 mb-8">
@@ -174,26 +171,26 @@ export default function TestResult() {
             </section>
           </>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-lg p-10">
             {results.length > 0 && (
-              <div className="max-w-2xl mx-auto">
-                <h1 className="text-2xl font-bold text-gray-900 mb-6">Your Test Result</h1>
+              <div className="w-full mx-auto">
+                <h1 className="text-2xl font-medium text-gray-900 mb-6">Your Test Result</h1>
                 <div className="space-y-6">
-                  <div className="text-center p-8 bg-cyan-50 rounded-lg">
-                    <h2 className="text-sm font-medium text-cyan-900 mb-2">Final Score</h2>
-                    <p className="text-5xl font-bold text-cyan-700">{results[0].score}%</p>
+                  <div className="text-center p-8 bg-teal-100/60 rounded-xl">
+                    <h2 className="text-md font-medium text-teal-900 mb-2">Final Score</h2>
+                    <p className="text-5xl font-bold text-teal-600">{results[0].score}%</p>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <h3 className="text-sm font-medium text-gray-900 mb-1">Questions</h3>
+                    <div className="p-4 bg-teal-100/60 rounded-xl">
+                      <h3 className="text-md font-medium text-gray-900 mb-1">Questions</h3>
                       <p className="text-2xl font-bold text-gray-700">
                         {results[0].correct_answers} / {results[0].total_questions}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">correct answers</p>
                     </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <h3 className="text-sm font-medium text-gray-900 mb-1">Time Taken</h3>
+                    <div className="p-4 bg-teal-100/60 rounded-xl">
+                      <h3 className="text-md font-medium text-gray-900 mb-1">Time Taken</h3>
                       <p className="text-2xl font-bold text-gray-700">
                         {Math.round((new Date(results[0].ended_at).getTime() - 
                           new Date(results[0].started_at).getTime()) / 60000)} min
@@ -206,7 +203,6 @@ export default function TestResult() {
             )}
           </div>
         )}
-      </div>
-    </main>
+      </section>
   );
 }

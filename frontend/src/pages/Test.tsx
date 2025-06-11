@@ -5,6 +5,7 @@ import TestCard from '../components/test/TestCard';
 import CreateTestModal from '../components/test/CreateTestModal';
 import GenerateTestModal from '../components/test/GenerateTestModal';
 import CategoryModal from '../components/test/CategoryModal';
+import { LoaderCircle } from 'lucide-react';
 
 export default function Test() {
     const { userData } = useUserData();
@@ -70,7 +71,7 @@ export default function Test() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-row justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">
                     {userData.role === 'admin' ? 'Test Management' : 'My Tests'}
                 </h1>
@@ -132,11 +133,14 @@ export default function Test() {
             )}
 
             {isLoading ? (
-                <div className="flex justify-center items-center">
-                    <p className="text-gray-600">Loading tests...</p>
-                </div>
+                <section className="flex h-full justify-center items-center">
+                    <div className="text-gray-600 pt-10 flex flex-col items-center gap-4">
+                        <LoaderCircle className="animate-spin" color='#5d8297' size={45} />
+                        <span className='text-[#5d8297] text-lg font-medium'>Loading tests...</span>
+                    </div>
+                </section>
             ) : tests.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex flex-row flex-wrap gap-10">
                     {tests.map((test) => (
                         <TestCard
                             key={test.id}
@@ -146,7 +150,7 @@ export default function Test() {
                     ))}
                 </div>
             ) : (
-                <p className="text-gray-600 text-center py-12">No tests available yet</p>
+                <p className="text-[#5d8297] pt-15 text-lg font-medium text-center">No tests available yet.</p>
             )}
         </div>
     );

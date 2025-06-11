@@ -37,8 +37,8 @@ export default function TestCard({ test, onDelete }: { test: TestType, onDelete?
       className="bg-gradient-to-br from-white to-gray-50 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer w-80 relative"
       onClick={handleCardClick}
     >
-      <div className="bg-gradient-to-r from-cyan-600 to-cyan-700 text-white p-6 h-28 flex items-end relative">
-        <div className="absolute top-3 left-3 bg-cyan-500 px-2 py-1 rounded text-xs font-medium opacity-90">
+      <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-6 h-28 flex items-end relative">
+        <div className="absolute top-3 left-3 bg-teal-400 px-2 py-1 rounded text-[13px] font-medium opacity-90">
           {test.category}
         </div>
         <h2 className="text-xl font-medium line-clamp-2">{test.name}</h2>
