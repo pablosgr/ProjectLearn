@@ -222,9 +222,9 @@ export default function TestDetail() {
                             />
                             
                             {isTeacher && (
-                                <div className="mt-8 flex justify-end">
+                                <div className="mt-8 flex flex-row items-center gap-4 justify-end">
                                     {saveState && (
-                                        <p className={`text-sm ${ saveState.type === 'error' ? 'text-red-600' : 'text-green-600' }`}>
+                                        <p className={`text-md ${ saveState.type === 'error' ? 'text-red-600' : 'text-green-600' }`}>
                                             {saveState.message}
                                         </p>
                                     )}
