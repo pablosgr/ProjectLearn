@@ -86,7 +86,7 @@ export default function TestCard({ test, onDelete }: { test: TestType, onDelete?
         }}
         title="Delete Test"
       >
-        <p>Are you sure you want to delete "{test.name}"? This action cannot be undone.</p>
+        <p>Are you sure you want to delete "<strong>{test.name}</strong>"? This action cannot be undone.</p>
       </Modal>
     </div>
   );

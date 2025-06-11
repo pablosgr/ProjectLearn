@@ -6,6 +6,7 @@ import type { UserFormData } from '../components/form/UserForm';
 import UserCard from '../components/classroom/UserCard';
 import UserForm from '../components/form/UserForm';
 import Modal from '../components/ui/Modal';
+import { LoaderCircle, Plus } from 'lucide-react';
 
 export default function Users() {
   const { userData } = useUserData();
@@ -105,21 +106,22 @@ export default function Users() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-center items-center">
-          <p className="text-gray-600">Loading users...</p>
-        </div>
+      <div className='w-full pt-20 flex items-center justify-center'>
+        <span className='flex flex-col items-center gap-4'>
+          <LoaderCircle className='animate-spin' size={50} />
+          <p className='text-lg font-medium'>Loading users..</p>
+        </span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+      <div className="max-w-4xl mx-auto mt-20 p-8 bg-red-200 rounded-2xl border-1 border-red-500 flex items-center justify-center">
+        <p className="text-red-500 text-lg font-medium">
           {error}
-        </div>
-      </div>
+        </p>
+    </div>
     );
   }
 
@@ -129,9 +131,10 @@ export default function Users() {
         <h1 className="text-3xl font-bold">User Management</h1>
         <button
           onClick={() => setShowAddTeacherModal(true)}
-          className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+          className="bg-cyan-600 text-white font-medium flex flex-row gap-3 py-2 px-3 rounded-lg hover:bg-cyan-700 transition-colors hover:cursor-pointer"
         >
-          ➕ Add Teacher
+          <Plus strokeWidth={3}/>
+          Add teacher
         </button>
       </div>
       
@@ -159,6 +162,8 @@ export default function Users() {
           setModalError(null);
         }}
         title="Add New Teacher"
+        actionColor='green'
+        type='addteacher'
       >
         <div className="space-y-4">
           {modalError && (
@@ -170,6 +175,7 @@ export default function Users() {
             onSubmit={handleAddTeacher}
             submitButtonText="Add Teacher"
             loading={addingTeacher}
+            type="add"
           />
         </div>
       </Modal>

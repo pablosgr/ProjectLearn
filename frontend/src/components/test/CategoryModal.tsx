@@ -5,10 +5,9 @@ import type { Category } from '../../types/category-type';
 interface CategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
 }
 
-export default function CategoryModal({ isOpen, onClose, onSuccess }: CategoryModalProps) {
+export default function CategoryModal({ isOpen, onClose }: CategoryModalProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [newCategory, setNewCategory] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +52,6 @@ export default function CategoryModal({ isOpen, onClose, onSuccess }: CategoryMo
 
       setNewCategory('');
       await fetchCategories();
-      onSuccess();
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to create category');
     } finally {
@@ -62,7 +60,7 @@ export default function CategoryModal({ isOpen, onClose, onSuccess }: CategoryMo
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Manage Categories">
+    <Modal isOpen={isOpen} onClose={onClose} title="Manage Categories" type='add'>
       <div className="p-6">
         <form onSubmit={handleSubmit} className="mb-8">
           <div className="flex gap-4">
@@ -76,9 +74,9 @@ export default function CategoryModal({ isOpen, onClose, onSuccess }: CategoryMo
             <button
               type="submit"
               disabled={isLoading}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors disabled:opacity-50"
+              className="px-4 py-2 font-medium bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 disabled:opacity-50 hover:cursor-pointer transition-colors"
             >
-              {isLoading ? 'Adding...' : 'Add Category'}
+              {isLoading ? 'Adding...' : 'Add category'}
             </button>
           </div>
           {error && (
@@ -89,7 +87,10 @@ export default function CategoryModal({ isOpen, onClose, onSuccess }: CategoryMo
         <div className="space-y-2">
           <h3 className="font-medium text-gray-900 mb-3">Existing Categories</h3>
           {categories.length > 0 ? (
-            <ul className="divide-y divide-gray-200">
+            <ul className="
+              divide-y divide-gray-200 max-h-[200px] overflow-y-auto
+              scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:none]
+            ">
               {categories.map((category) => (
                 <li key={category.id} className="py-2 flex justify-between items-center">
                   <span>{category.name}</span>

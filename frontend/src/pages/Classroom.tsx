@@ -138,7 +138,7 @@ export default function Classroom() {
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onSuccess={() => {
-          getTeacherClasses(); // Refresh the list after creating
+          getTeacherClasses(); // Refresh the list after creating class
         }}
       />
 

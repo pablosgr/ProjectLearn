@@ -5,7 +5,7 @@ import TestCard from '../components/test/TestCard';
 import CreateTestModal from '../components/test/CreateTestModal';
 import GenerateTestModal from '../components/test/GenerateTestModal';
 import CategoryModal from '../components/test/CategoryModal';
-import { LoaderCircle, Plus, Bot } from 'lucide-react';
+import { LoaderCircle, Plus, Bot, List } from 'lucide-react';
 
 export default function Test() {
     const { userData } = useUserData();
@@ -78,9 +78,10 @@ export default function Test() {
                 {userData.role === 'admin' ? (
                     <button
                         onClick={() => setShowCategoryModal(true)}
-                        className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                        className="bg-cyan-600 text-white font-medium flex flex-row gap-3 py-2 px-3 rounded-lg hover:bg-cyan-700 transition-colors hover:cursor-pointer"
                     >
-                        ➕ Manage Categories
+                        <List strokeWidth={3} />
+                        Manage Categories
                     </button>
                 ) : (
                     userData.role === 'teacher' && (
@@ -108,7 +109,6 @@ export default function Test() {
                 <CategoryModal
                     isOpen={showCategoryModal}
                     onClose={() => setShowCategoryModal(false)}
-                    onSuccess={() => setShowCategoryModal(false)}
                 />
             )}
 

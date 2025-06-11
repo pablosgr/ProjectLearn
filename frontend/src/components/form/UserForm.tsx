@@ -6,6 +6,7 @@ interface UserFormProps {
   submitButtonText: string;
   role?: 'student' | 'teacher';
   loading?: boolean;
+  type?: string;
 }
 
 export interface UserFormData {
@@ -26,7 +27,8 @@ export interface ValidationErrors {
 const UserForm: React.FC<UserFormProps> = ({ 
   onSubmit, 
   submitButtonText,
-  loading = false 
+  loading = false,
+  type
 }) => {
   const [formData, setFormData] = useState<UserFormData>({
     name: '',
@@ -74,14 +76,15 @@ const UserForm: React.FC<UserFormProps> = ({
 
   return (
     <form 
-      className="
-        flex flex-col gap-6
-        max-w-[400px] min-w-[400px]
-        h-fit
-        text-neutral-600
-        rounded-2xl p-10
-        shadow-xl bg-white
-      "
+      className={`
+          flex flex-col gap-6
+          max-w-[400px] min-w-[400px]
+          h-fit
+          text-neutral-600
+          rounded-2xl p-10
+          bg-white
+          ${type === 'add' ? '' : 'shadow-xl'}
+        `}
       onSubmit={handleSubmit}
     >
       <input 
