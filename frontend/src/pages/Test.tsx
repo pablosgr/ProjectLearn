@@ -5,7 +5,7 @@ import TestCard from '../components/test/TestCard';
 import CreateTestModal from '../components/test/CreateTestModal';
 import GenerateTestModal from '../components/test/GenerateTestModal';
 import CategoryModal from '../components/test/CategoryModal';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, Plus, Bot } from 'lucide-react';
 
 export default function Test() {
     const { userData } = useUserData();
@@ -71,7 +71,7 @@ export default function Test() {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <div className="flex flex-row justify-between items-center mb-8">
+            <div className="flex flex-row flex-wrap gap-6 justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">
                     {userData.role === 'admin' ? 'Test Management' : 'My Tests'}
                 </h1>
@@ -87,15 +87,17 @@ export default function Test() {
                         <div className="flex gap-4">
                             <button
                                 onClick={() => setShowGenerateModal(true)}
-                                className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                                className="bg-teal-600 text-white font-medium flex flex-row gap-3 py-2 px-3 rounded-lg hover:bg-teal-700 transition-colors hover:cursor-pointer"
                             >
-                                🤖 AI Generate
+                                <Bot strokeWidth={3} />
+                                AI Generate
                             </button>
                             <button
                                 onClick={() => setShowCreateModal(true)}
-                                className="bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors"
+                                className="bg-teal-600 text-white font-medium flex flex-row gap-3 py-2 px-3 rounded-lg hover:bg-teal-700 transition-colors hover:cursor-pointer"
                             >
-                                ➕ New Test
+                                <Plus strokeWidth={3} />
+                                New Test
                             </button>
                         </div>
                     )
@@ -135,8 +137,8 @@ export default function Test() {
             {isLoading ? (
                 <section className="flex h-full justify-center items-center">
                     <div className="text-gray-600 pt-10 flex flex-col items-center gap-4">
-                        <LoaderCircle className="animate-spin" color='#5d8297' size={45} />
-                        <span className='text-[#5d8297] text-lg font-medium'>Loading tests...</span>
+                        <LoaderCircle className="animate-spin text-teal-600" size={45} />
+                        <span className='text-teal-600 text-lg font-medium'>Loading tests...</span>
                     </div>
                 </section>
             ) : tests.length > 0 ? (
@@ -150,7 +152,7 @@ export default function Test() {
                     ))}
                 </div>
             ) : (
-                <p className="text-[#5d8297] pt-15 text-lg font-medium text-center">No tests available yet.</p>
+                <p className="text-teal-600 pt-15 text-lg font-medium text-center">No tests available yet.</p>
             )}
         </div>
     );

@@ -4,6 +4,7 @@ import { useUserData } from '../context/UserContext';
 import type { TestType, TestQuestion } from '../types/test-type';
 import TestQuestions from '../components/test/TestQuestion';
 import TestSettings from '../components/test/TestSettings';
+import { LoaderCircle } from 'lucide-react';
 
 export default function TestDetail() {
     const { id } = useParams();
@@ -117,10 +118,10 @@ export default function TestDetail() {
     // Add role check before main content
     if (!userData || (userData.role !== 'teacher' && userData.role !== 'admin')) {
         return (
-            <div className="max-w-4xl mx-auto bg-orange-200 border border-orange-400 rounded-lg p-6 text-center">
-                <h1 className="text-2xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
+            <div className="mt-20 max-w-4xl mx-auto bg-orange-200 border border-orange-500 rounded-2xl p-6 text-center">
+                <h1 className="text-xl font-medium text-yellow-800 mb-2">Access Restricted</h1>
                 <p className="text-yellow-700">
-                    Sorry, only teachers and administrators can access test details.
+                    Sorry, only teachers and administrators can access test details
                 </p>
             </div>
         );
@@ -128,19 +129,22 @@ export default function TestDetail() {
 
     if (isLoading) {
         return (
-            <main className="h-40 rounded-lg bg-gray-100 grid place-items-center">
-                <p className="text-gray-600">Loading test details...</p>
-            </main>
+            <div className='w-full pt-20 flex items-center justify-center'>
+                <span className='flex flex-col items-center gap-4'>
+                    <LoaderCircle className='animate-spin' size={50} />
+                    <p className='text-lg font-medium'>Loading test details..</p>
+                </span>
+        </div>
         );
     }
 
     if (error || !test) {
         return (
-            <main className="min-h-screen bg-gray-100 p-8">
-                <p className="max-w-4xl mx-auto bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                    {error || 'Test not found'}
+            <div className="max-w-4xl mx-auto mt-20 p-8 bg-red-200 rounded-2xl border-1 border-red-500 flex items-center justify-center">
+                <p className="text-red-500 text-lg font-medium">
+                    Test not found
                 </p>
-            </main>
+            </div>
         );
     }
 
@@ -155,10 +159,9 @@ export default function TestDetail() {
     }
 
     return (
-        <main className="bg-gray-100 rounded-lg overflow-hidden h-full">
-            <header className="bg-cyan-600 text-white">
-                <section className="max-w-7xl mx-auto px-6 pt-4">
-                    <div className="flex justify-between items-start mb-4">
+        <section className="bg-[#f5f7f5] rounded-xl shadow-lg overflow-hidden h-full">
+            <header className="bg-teal-600 text-white">
+                    <div className="flex justify-between items-start mb-4 max-w-7xl mx-auto px-9 pt-7 pb-6">
                         <div>
                             <h1 className="text-3xl font-medium mb-1">{test.name}</h1>
                             <div className="flex items-center gap-2 text-white/90 text-sm">
@@ -173,9 +176,6 @@ export default function TestDetail() {
                             Created {new Date(test.created_at).toLocaleDateString()}
                         </time>
                     </div>
-                    
-                    {/* Rest of the header content */}
-                </section>
             </header>
 
             <div className="max-w-7xl mx-auto px-6 py-8">
@@ -231,18 +231,13 @@ export default function TestDetail() {
                                     <button
                                         onClick={handleSaveTest}
                                         disabled={isSaving}
-                                        className={`px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 
-                                            disabled:opacity-50 disabled:cursor-not-allowed font-medium
-                                            flex items-center gap-2`}
-                                    >
-                                        {isSaving ? (
-                                            <>
-                                                <span className="animate-spin">↻</span>
-                                                Saving...
-                                            </>
-                                        ) : (
-                                            'Save Changes'
-                                        )}
+                                        className="
+                                            px-4 py-2 bg-teal-600 text-white text-medium rounded-lg hover:bg-teal-700 
+                                            disabled:opacity-50 font-medium hover:cursor-pointer transition-colors"
+                                        >
+                                            <span>
+                                                {isSaving ? 'Saving...' : 'Save Changes'}
+                                            </span>
                                     </button>
                                 </div>
                             )}
@@ -250,6 +245,6 @@ export default function TestDetail() {
                     </div>
                 )}
             </div>
-        </main>
+        </section>
     );
 }

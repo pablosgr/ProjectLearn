@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import QuestionField from './QuestionField';
 import type { TestQuestion } from '../../types/test-type';
+import { Plus, Trash } from 'lucide-react';
 
 interface TestQuestionsProps {
   questions?: TestQuestion[];
@@ -99,50 +100,58 @@ export default function TestQuestions({ questions = [], onQuestionsUpdate, isTea
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 flex flex-col">
             <div className="flex justify-between items-center">
                 <h2 className="text-xl text-neutral-900 font-medium">Questions ({questions.length}/10)</h2>
-                {questions.length < 10 && (
-                    <button
-                        onClick={addNewQuestion}
-                        className="text-sm text-cyan-600 hover:text-cyan-700 font-medium"
-                    >
-                        + Add Question
-                    </button>
-                )}
             </div>
 
             {questions.map((questionData, index) => (
-                <div key={index} className="relative border-b border-gray-200 pb-4 last:border-b-0">
-                    <div className="flex justify-between items-center mb-4">
+                <article key={index} className="relative border-b border-gray-300 pb-4 last:border-b-0">
+                    <section className="mb-3 flex felx-row items-center justify-end gap-4">
+                        <button
+                            onClick={() => {
+                                const newQuestions = [...questions];
+                                const targetCount = questionData.options.length === 2 ? 4 : 2;
+                                newQuestions[index] = adjustOptions(questionData, targetCount);
+                                onQuestionsUpdate(newQuestions);
+                            }}
+                            className="
+                                px-3 py-2 text-sm text-teal-600 border-teal-500 rounded-lg 
+                                hover:bg-teal-200 hover:cursor-pointer transition-colors font-medium"
+                        >
+                            {questionData.options.length === 2 ? '+ Add 2 More Options' : '- Remove 2 Options'}
+                        </button>
                         {questions.length > 1 && (
                             <button
+                                type="button"
                                 onClick={() => removeQuestion(index)}
-                                className="text-red-500 hover:text-red-700 text-sm font-medium"
+                                className="text-red-400 hover:bg-red-200 rounded-lg p-2 hover:cursor-pointer transition-colors"
+                                title="Remove question"
                             >
-                                ❌ Remove
+                                <Trash size={22} />
                             </button>
                         )}
-                    </div>
+                    </section>
                     <QuestionField
                         questionNumber={index + 1}
                         questionData={questionData}
                         setQuestionData={(newData: TestQuestion) => handleQuestionDataUpdate(index, newData)}
                         errors={errors[index]}
                     />
-                    <button
-                        onClick={() => {
-                            const newQuestions = [...questions];
-                            const targetCount = questionData.options.length === 2 ? 4 : 2;
-                            newQuestions[index] = adjustOptions(questionData, targetCount);
-                            onQuestionsUpdate(newQuestions);
-                        }}
-                        className="text-sm text-cyan-600 hover:text-cyan-700 font-medium"
-                    >
-                        {questionData.options.length === 2 ? '+ Add 2 More Options' : '- Remove 2 Options'}
-                    </button>
-                </div>
+                </article>
             ))}
+            {questions.length < 10 && (
+                <button
+                    type="button"
+                    onClick={addNewQuestion}
+                    className="
+                        w-fit self-end flex flex-row gap-2 items-center text-medium text-white p-2 rounded-lg 
+                        bg-teal-600 hover:bg-teal-700 font-medium hover:cursor-pointer transition-colors"
+                    >
+                        <Plus className="inline mr-3" strokeWidth={3} />
+                        <span>Add Question</span>
+                </button>
+            )}
         </div>
     );
 }

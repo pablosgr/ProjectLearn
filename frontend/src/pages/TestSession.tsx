@@ -251,8 +251,8 @@ export default function TestSession() {
                       key={option.id}
                       className={`p-3 rounded-lg ${
                         option.is_correct
-                          ? 'bg-green-100 border-green-200 text-green-800'
-                          : 'bg-gray-50 text-gray-900'
+                          ? 'bg-green-100 border-green-400 text-green-800'
+                          : 'bg-gray-50 border-neutral-400 text-gray-900'
                       } border`}
                     >
                       {option.option_text}

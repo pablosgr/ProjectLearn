@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { useValidateSession } from '../hooks/UseValidateSession.tsx';
 import { Link } from 'react-router';
+import { LoaderCircle } from 'lucide-react';
 
 export default function Login() {
   const [username, setUsername] = useState<string>('');
@@ -62,7 +63,12 @@ export default function Login() {
   };
 
   if (pageLoading) {
-    return <div>Loading...</div>;
+    return <div className='w-full pt-90 flex items-center justify-center'>
+        <span className='flex flex-col items-center gap-4'>
+          <LoaderCircle className='animate-spin' size={50} />
+          <p className='text-lg font-medium'>Loading..</p>
+        </span>
+      </div>
   }
 
   return (

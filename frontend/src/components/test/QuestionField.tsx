@@ -28,7 +28,7 @@ export default function QuestionField({
           type="text"
           value={questionData.question_text}
           onChange={(e) => setQuestionData({ ...questionData, question_text: e.target.value })}
-          className={`w-full px-3 py-2 border ${errors?.question_text ? 'border-red-500' : 'border-gray-300'} rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
+          className={`w-full px-3 py-2 border ${errors?.question_text ? 'border-red-500' : 'border-gray-300'} rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-teal-600 focus:border-teal-600`}
           disabled={disabled}
         />
         {errors?.question_text && (
@@ -51,7 +51,7 @@ export default function QuestionField({
                   }));
                   setQuestionData({ ...questionData, options: newOptions });
                 }}
-                className="text-cyan-600 focus:ring-cyan-500 h-4 w-4"
+                className="text-teal-600 focus:ring-teal-500 h-4 w-4"
                 disabled={disabled}
               />
               <input
@@ -62,7 +62,7 @@ export default function QuestionField({
                   newOptions[index] = { ...newOptions[index], option_text: e.target.value };
                   setQuestionData({ ...questionData, options: newOptions });
                 }}
-                className={`flex-1 px-3 py-2 border ${errors?.options?.[index] ? 'border-red-500' : 'border-gray-300'} rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
+                className={`flex-1 px-3 py-2 border ${errors?.options?.[index] ? 'border-red-500' : 'border-gray-300'} rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-teal-500 focus:border-teal-500`}
                 placeholder={`Option ${index + 1}`}
                 disabled={disabled}
               />

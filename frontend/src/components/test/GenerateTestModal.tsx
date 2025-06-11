@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Category } from '../../types/category-type';
 import { GoogleGenAI } from '@google/genai';
+import { LoaderCircle } from 'lucide-react';
 
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 
@@ -176,7 +177,7 @@ export default function GenerateTestModal({ isOpen, onClose, onSuccess }: Genera
   return (
     <div className="fixed inset-0 bg-neutral-900/80 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg w-full max-w-md p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Generate Test with AI</h2>
+        <h2 className="text-2xl font-medium text-teal-600 mb-6">Generate Test with AI</h2>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -186,7 +187,9 @@ export default function GenerateTestModal({ isOpen, onClose, onSuccess }: Genera
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+              className="
+              w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900 focus:ring-2 
+              focus:ring-teal-500 focus:border-teal-500"
             >
               <option value="">Select a category</option>
               {categories.map((category) => (
@@ -205,7 +208,9 @@ export default function GenerateTestModal({ isOpen, onClose, onSuccess }: Genera
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="Describe the topic for the test (e.g., 'Basic SQL commands and their usage')"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+              className="
+                w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-900 focus:ring-2 
+                focus:ring-teal-500 focus:border-teal-500"
               rows={3}
             />
           </div>
@@ -218,19 +223,23 @@ export default function GenerateTestModal({ isOpen, onClose, onSuccess }: Genera
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+              className="
+                px-4 py-2 text-teal-600 border-1 border-teal-700 rounded-lg 
+                hover:bg-teal-200 hover:cursor-pointer transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isGenerating}
-              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 disabled:opacity-50 font-medium flex items-center gap-2"
+              className="
+                flex flex-row items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 
+                disabled:opacity-50 font-medium hover:cursor-pointer transition-colors"
             >
               {isGenerating ? (
                 <>
-                  <span className="animate-spin">↻</span>
-                  Generating...
+                  <LoaderCircle className="text-white animate-spin" size={17} />
+                  <span>Generating...</span>
                 </>
               ) : (
                 'Generate Test'

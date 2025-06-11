@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useUserData } from '../../context/UserContext';
 import Modal from '../ui/Modal';
 import type { TestType } from '../../types/test-type';
+import { Trash, User, Clock } from 'lucide-react';
 
 export default function TestCard({ test, onDelete }: { test: TestType, onDelete?: (id: string) => Promise<void>; }) {
   const navigate = useNavigate();
@@ -45,12 +46,12 @@ export default function TestCard({ test, onDelete }: { test: TestType, onDelete?
       </div>
       
       <div className="p-4">
-        <div className="flex items-center gap-2 text-gray-600 text-sm">
-          <span className="text-base">🕒</span>
+        <div className="flex items-center gap-4 text-gray-600 text-sm">
+          <Clock color='grey'/>
           <time>{new Date(test.created_at).toLocaleDateString()}</time>
         </div>
-        <div className="mt-3 flex items-center gap-2 text-gray-600 text-sm">
-          <span className="text-base">👤</span>
+        <div className="mt-3 flex items-center gap-4 text-gray-600 text-sm">
+          <User color='grey'/>
           <span>{test.author_name}</span>
         </div>
       </div>
@@ -61,10 +62,11 @@ export default function TestCard({ test, onDelete }: { test: TestType, onDelete?
             e.stopPropagation();
             setShowDeleteModal(true);
           }}
-          className="delete-btn absolute top-2 right-2 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
+          className="delete-btn absolute top-2 right-2 p-2 rounded-lg transition-colors
+            hover:bg-teal-500 hover:bg-opacity-20 hover:cursor-pointer"
           title="Delete test"
         >
-          🗑️
+          <Trash color='white'/>
         </button>
       )}
 
