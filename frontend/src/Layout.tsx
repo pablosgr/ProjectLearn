@@ -56,7 +56,7 @@ export default function Layout() {
   return (
     <>
       <header className='h-[80px] w-full bg-[#DDA853] flex items-center justify-between px-8 text-white'>
-        <p className='w-[200px] text-lg font-medium select-none'>Track & Learn</p>
+        <p className='w-[200px] text-lg font-medium select-none'>Project Learn</p>
         
         {/* Desktop Navigation */}
         <nav className='hidden lg:block w-full'>
