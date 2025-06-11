@@ -20,7 +20,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, onConfirm, title, actionColor,
       onClick={onClose}
     >
       <article 
-        className="modal-content bg-white rounded-xl p-6 text-neutral-600 max-w-lg mx-4 space-y-6"
+        className="modal-content bg-white rounded-xl p-6 text-neutral-600 min-w-md max-w-lg mx-4 space-y-6"
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="text-lg font-medium text-cyan-600">{title}</h3>

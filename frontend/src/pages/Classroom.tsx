@@ -6,13 +6,15 @@ import ClassroomCard from '../components/classroom/ClassroomCard.tsx';
 import CreateClassModal from '../components/classroom/ClassroomModal.tsx';
 import { Plus } from 'lucide-react';
 import { LoaderCircle } from 'lucide-react';
+import SearchBar from '../components/ui/Searchbar.tsx';
 
 export default function Classroom() {
   const { userData } = useUserData();
   const [isLoading, setIsLoading] = useState(true);
-  const [studentClassrooms, setStudentClassrooms] = useState<StudentClassroomsResponse | null>(null);
-  const [teacherClassrooms, setTeacherClassrooms] = useState<ClassroomsType | null>(null);
+  const [studentClassrooms, setStudentClassrooms] = useState<StudentClassroomsResponse>([]);
+  const [teacherClassrooms, setTeacherClassrooms] = useState<ClassroomsType>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const getStudentClasses = async () => {
     try {
@@ -26,10 +28,17 @@ export default function Classroom() {
       }
 
       const data = await response.json();
+
+      if (data.error) {
+        setStudentClassrooms([]);
+        throw new Error(data.error);
+      }
+
       setStudentClassrooms(data);
-      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching student classes:', error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -45,10 +54,17 @@ export default function Classroom() {
       }
 
       const data = await response.json();
+
+      if (data.error) {
+        setTeacherClassrooms([]);
+        throw new Error(data.error);
+      }
+
       setTeacherClassrooms(data.classrooms);
-      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching student classes:', error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -64,10 +80,17 @@ export default function Classroom() {
       }
 
       const data = await response.json();
+
+      if (data.error) {
+        setTeacherClassrooms([]);
+        throw new Error(data.error);
+      }
+
       setTeacherClassrooms(data.classrooms);
-      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching all classrooms:', error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -119,10 +142,27 @@ export default function Classroom() {
     }
   };
 
+  const filteredTeacherClassrooms = teacherClassrooms?.filter(classroom =>
+    classroom.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    classroom.teacher_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredStudentClassrooms = studentClassrooms?.filter(classroom =>
+    classroom.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    classroom.teacher.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="container h-full mx-auto py-8">
       <div className="flex justify-between flex-wrap gap-6 items-center mb-8">
         <h1 className="text-3xl font-bold">{userData?.role === 'admin' ? 'Classrooms Management' : 'My Classrooms'}</h1>
+      </div>
+
+      <div className="mb-10 flex flex-row flex-wrap-reverse gap-5">
+        <SearchBar
+          placeholder="Search by name or teacher..."
+          onSearch={setSearchQuery}
+        />
         {userData?.role === 'teacher' && (
           <button
             onClick={() => setShowCreateModal(true)}
@@ -151,24 +191,23 @@ export default function Classroom() {
         </section>
       ) : (
         <div className="space-y-8">
-
-          {teacherClassrooms && teacherClassrooms.length > 0 && (
+          {filteredTeacherClassrooms && filteredTeacherClassrooms.length > 0 && (
             <section className="flex flex-row flex-wrap gap-10">
-                {teacherClassrooms.map((classroom) => (
-                  <ClassroomCard
-                    key={classroom.id}
-                    id={classroom.id}
-                    name={classroom.name}
-                    teacherUsername={classroom.teacher_name}
-                    onDelete={handleClassroomDelete}
-                  />
-                ))}
+              {filteredTeacherClassrooms.map((classroom) => (
+                <ClassroomCard
+                  key={classroom.id}
+                  id={classroom.id}
+                  name={classroom.name}
+                  teacherUsername={classroom.teacher_name}
+                  onDelete={handleClassroomDelete}
+                />
+              ))}
             </section>
           )}
 
-          {studentClassrooms && studentClassrooms.length > 0 && (
+          {filteredStudentClassrooms && filteredStudentClassrooms.length > 0 && (
             <section className="flex flex-row flex-wrap gap-10">
-                {studentClassrooms.map((classroom) => (
+                {filteredStudentClassrooms.map((classroom) => (
                   <ClassroomCard
                     key={classroom.id}
                     id={classroom.id}
@@ -179,8 +218,10 @@ export default function Classroom() {
             </section>
           )}
           
-          {(!studentClassrooms?.length && !teacherClassrooms?.length) && (
-            <p className="text-[#5d8297] pt-15 text-lg font-medium text-center">No classrooms found.</p>
+          {(!filteredStudentClassrooms?.length && !filteredTeacherClassrooms?.length) && (
+            <p className="text-[#5d8297] pt-15 text-lg font-medium text-center">
+              {searchQuery ? 'No classrooms match your search.' : 'No classrooms found.'}
+            </p>
           )}
         </div>
       )}

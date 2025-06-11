@@ -6,6 +6,7 @@ import CreateTestModal from '../components/test/CreateTestModal';
 import GenerateTestModal from '../components/test/GenerateTestModal';
 import CategoryModal from '../components/test/CategoryModal';
 import { LoaderCircle, Plus, Bot, List } from 'lucide-react';
+import SearchBar from '../components/ui/Searchbar';
 
 export default function Test() {
     const { userData } = useUserData();
@@ -14,6 +15,7 @@ export default function Test() {
     const [showGenerateModal, setShowGenerateModal] = useState(false);
     const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const fetchTests = async () => {
         try {
@@ -29,6 +31,12 @@ export default function Test() {
             if (!response.ok) throw new Error('Failed to fetch tests');
             
             const data = await response.json();
+
+            if (data.error) {
+                setTests([]);
+                return;
+            }
+
             setTests(data);
         } catch (error) {
             console.error('Error fetching tests:', error);
@@ -58,6 +66,12 @@ export default function Test() {
         }
     };
 
+    const filteredTests = tests.filter(test => 
+        test.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (test.author_name && test.author_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (test.category && test.category.toLowerCase().includes(searchQuery.toLowerCase())))
+    );
+
     if (!userData || (userData.role !== 'teacher' && userData.role !== 'admin')) {
         return (
             <div className="mt-20 max-w-4xl mx-auto bg-orange-200 border border-orange-500 rounded-2xl p-6 text-center">
@@ -75,10 +89,17 @@ export default function Test() {
                 <h1 className="text-3xl font-bold">
                     {userData.role === 'admin' ? 'Test Management' : 'My Tests'}
                 </h1>
+            </div>
+
+            <div className="mb-10 flex flex-row flex-wrap-reverse gap-5">
+                <SearchBar
+                    placeholder={`Search by name${ userData.role === 'teacher' ? ' or category' : ', teacher or category' }..`}
+                    onSearch={setSearchQuery}
+                />
                 {userData.role === 'admin' ? (
                     <button
                         onClick={() => setShowCategoryModal(true)}
-                        className="bg-cyan-600 text-white font-medium flex flex-row gap-3 py-2 px-3 rounded-lg hover:bg-cyan-700 transition-colors hover:cursor-pointer"
+                        className="bg-teal-600 text-white font-medium flex flex-row gap-3 py-2 px-3 rounded-lg hover:bg-teal-700 transition-colors hover:cursor-pointer"
                     >
                         <List strokeWidth={3} />
                         Manage Categories
@@ -141,9 +162,9 @@ export default function Test() {
                         <span className='text-teal-600 text-lg font-medium'>Loading tests...</span>
                     </div>
                 </section>
-            ) : tests.length > 0 ? (
+            ) : filteredTests.length > 0 ? (
                 <div className="flex flex-row flex-wrap gap-10">
-                    {tests.map((test) => (
+                    {filteredTests.map((test) => (
                         <TestCard
                             key={test.id}
                             test={test}
@@ -152,7 +173,9 @@ export default function Test() {
                     ))}
                 </div>
             ) : (
-                <p className="text-teal-600 pt-15 text-lg font-medium text-center">No tests available yet.</p>
+                <p className="text-teal-600 pt-15 text-lg font-medium text-center">
+                    {searchQuery ? 'No tests match your search.' : 'No tests available yet.'}
+                </p>
             )}
         </div>
     );

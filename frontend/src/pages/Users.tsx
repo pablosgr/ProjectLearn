@@ -7,6 +7,7 @@ import UserCard from '../components/classroom/UserCard';
 import UserForm from '../components/form/UserForm';
 import Modal from '../components/ui/Modal';
 import { LoaderCircle, Plus } from 'lucide-react';
+import SearchBar from '../components/ui/Searchbar';
 
 export default function Users() {
   const { userData } = useUserData();
@@ -17,6 +18,13 @@ export default function Users() {
   const [showAddTeacherModal, setShowAddTeacherModal] = useState(false);
   const [addingTeacher, setAddingTeacher] = useState(false);
   const [modalError, setModalError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredUsers = users.filter(user => 
+    user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.role?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const fetchUsers = async () => {
       try {
@@ -31,6 +39,7 @@ export default function Users() {
         const data = await response.json();
 
         if (data.error) {
+          setUsers([]);
           throw new Error(data.error);
         }
 
@@ -129,6 +138,13 @@ export default function Users() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">User Management</h1>
+      </div>
+
+      <div className="mb-10 flex flex-row flex-wrap-reverse gap-5">
+        <SearchBar
+          placeholder="Search users by name, username or role.."
+          onSearch={setSearchQuery}
+        />
         <button
           onClick={() => setShowAddTeacherModal(true)}
           className="bg-cyan-600 text-white font-medium flex flex-row gap-3 py-2 px-3 rounded-lg hover:bg-cyan-700 transition-colors hover:cursor-pointer"
@@ -138,10 +154,10 @@ export default function Users() {
         </button>
       </div>
       
-      <div className="bg-white rounded-lg shadow-sm">
-        {users.length > 0 ? (
-          <ul className="divide-y divide-gray-100">
-            {users.map(user => (
+      <div className="bg-white rounded-lg shadow-xl">
+        {filteredUsers.length > 0 ? (
+          <ul className="divide-y divide-gray-200">
+            {filteredUsers.map(user => (
               <UserCard
                 key={user.id}
                 user={user}
@@ -150,7 +166,9 @@ export default function Users() {
             ))}
           </ul>
         ) : (
-          <p className="text-center py-8 text-gray-500">No users found.</p>
+          <p className="text-center py-8 text-gray-500">
+            {searchQuery ? 'No users match your search.' : 'No users found.'}
+          </p>
         )}
       </div>
 
@@ -163,7 +181,7 @@ export default function Users() {
         }}
         title="Add New Teacher"
         actionColor='green'
-        type='addteacher'
+        type='add'
       >
         <div className="space-y-4">
           {modalError && (

@@ -19,7 +19,7 @@ export default function QuestionField({
   disabled = false 
 }: QuestionFieldProps) {
   return (
-    <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+    <div className="space-y-4 p-4 bg-neutral-200/50 rounded-lg border border-gray-200">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Question {questionNumber}
