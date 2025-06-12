@@ -19,6 +19,7 @@ export default function Profile() {
     username: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   useEffect(() => {
     validateForm();
@@ -57,6 +58,7 @@ export default function Profile() {
     }
     
     setIsLoading(true);
+    setApiError(null);
     
     try {
       const response = await fetch('/php/user/user_edit_data.php', {
@@ -68,31 +70,36 @@ export default function Profile() {
         body: JSON.stringify({ name: formData.name, username: formData.username }),
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Network response failed');
+        throw new Error('Failed to update profile');
       }
 
-      const data = await response.json();
       if (data.error) {
         throw new Error(data.error);
       }
 
       if (data.message) {
         if (userData) {
-            setUserData({
-                ...userData,
-                name: formData.name,
-                username: formData.username
-            });
+          setUserData({
+            ...userData,
+            name: formData.name,
+            username: formData.username
+          });
         }
-    }
-      
-      setIsEditing(false);
+        setIsEditing(false);
+      }
     } catch (error) {
-      console.error('Error in petition:', error);
+      setApiError(error instanceof Error ? error.message : 'An error occurred');
+      setTimeout(() => setApiError(null), 3000);
+      
+      setFormData({
+        name: userData?.name || '',
+        username: userData?.username || ''
+      });
     } finally {
       setIsLoading(false);
-      setIsEditing(false);
     }
   };
 
@@ -126,6 +133,11 @@ export default function Profile() {
                 />
                 {errors.username && (
                   <p className="mt-1 text-sm text-red-800">{errors.username}</p>
+                )}
+                {apiError && (
+                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-800">{apiError}</p>
+                  </div>
                 )}
             </div>
             
