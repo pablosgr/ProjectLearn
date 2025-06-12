@@ -92,7 +92,7 @@ const UserForm: React.FC<UserFormProps> = ({
         placeholder="Full Name"
         value={formData.name}
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        className="border-1 border-neutral-500 p-2 rounded-lg"
+        className="border-1 border-neutral-400 p-2 rounded-lg"
       />
       {errors.name && (
         <p className="text-red-400 text-sm mt-1">{errors.name}</p>
@@ -103,7 +103,7 @@ const UserForm: React.FC<UserFormProps> = ({
         placeholder="Username (max 12 characters)"
         value={formData.username}
         onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-        className="border-1 border-neutral-500 p-2 rounded-lg"
+        className="border-1 border-neutral-400 p-2 rounded-lg"
         maxLength={12}
       />
       {errors.username && (
@@ -115,7 +115,7 @@ const UserForm: React.FC<UserFormProps> = ({
         placeholder="Email"
         value={formData.email}
         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        className="border-1 border-neutral-500 p-2 rounded-lg"
+        className="border-1 border-neutral-400 p-2 rounded-lg"
       />
       {errors.email && (
         <p className="text-red-400 text-sm mt-1">{errors.email}</p>
@@ -126,7 +126,7 @@ const UserForm: React.FC<UserFormProps> = ({
         placeholder="Password (5-8 characters)"
         value={formData.password}
         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-        className="border-1 border-neutral-500 p-2 rounded-lg"
+        className="border-1 border-neutral-400 p-2 rounded-lg"
       />
       {errors.password && (
         <p className="text-red-400 text-sm mt-1">{errors.password}</p>

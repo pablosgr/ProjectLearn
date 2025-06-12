@@ -13,7 +13,7 @@ export default function HeaderElement({
   children, 
   isDropdown = false,
 }: HeaderElementProps) {
-  const baseStyle = `relative group py-1 font-medium text-lg hover:cursor-pointer ${isDropdown ? 'text-neutral-600' : 'text-[#F5EEDC] hover:text-white'}`;
+  const baseStyle = `relative group py-1 font-medium text-xl hover:cursor-pointer ${isDropdown ? 'text-neutral-600' : 'text-[#F5EEDC] hover:text-white'}`;
   const dropdownStyle = `px-4 py-3 rounded-lg hover:bg-neutral-300 hover:text-neutral-700 hover:cursor-pointer block w-full text-center font-medium`;
 
   if (to) {

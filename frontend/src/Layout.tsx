@@ -56,9 +56,15 @@ export default function Layout() {
   return (
     <>
       <header className='h-[80px] w-full bg-[#DDA853] flex items-center justify-between px-8 text-white'>
-        <p className='w-[200px] text-lg font-medium select-none'>Project Learn</p>
+        <span className='h-full flex items-center'>
+          <img 
+            src="/project_learn_logo_wh.png" 
+            alt="Logo" 
+            className="w-fit h-10"
+          />
+        </span>
         
-        {/* Desktop Navigation */}
+        {/* Desktop version */}
         <nav className='hidden lg:block w-full'>
           <ul className='flex flex-row gap-14 justify-around items-center'>
             <HeaderElement to="/home">Home</HeaderElement>
@@ -74,7 +80,7 @@ export default function Layout() {
           </ul>
         </nav>
 
-        {/* Mobile Navigation */}
+        {/* Mobile version */}
         <div className='lg:hidden relative'>
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}

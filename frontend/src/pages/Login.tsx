@@ -73,7 +73,11 @@ export default function Login() {
 
   return (
     <div className="flex flex-col h-screen items-center justify-center">
-      <h1 className='text-3xl mb-10 font-medium'>Please, log in to proceed</h1>
+      <img 
+        src="/project_learn_logo_og.png" 
+        alt="Logo" 
+        className="w-fit h-28 mb-10"
+      />
       <form 
         className="
           flex flex-col gap-6
@@ -90,7 +94,7 @@ export default function Login() {
           id="username" 
           name="username" 
           placeholder="Username" 
-          className="border-1 border-neutral-500 p-2 rounded-lg" 
+          className="border-1 border-neutral-400 p-2 rounded-lg" 
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
@@ -99,7 +103,7 @@ export default function Login() {
           id="password" 
           name="password" 
           placeholder="Password" 
-          className="border-1 border-neutral-500 p-2 rounded-lg" 
+          className="border-1 border-neutral-400 p-2 rounded-lg" 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -119,7 +123,7 @@ export default function Login() {
           Don't have an account?{' '}
           <Link 
             to="/register" 
-            className="text-cyan-600 hover:text-cyan-400 transition-colors"
+            className="text-cyan-500 hover:text-cyan-400 transition-colors"
           >
             Register here
           </Link>
