@@ -9,14 +9,17 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
+    host: true,
+    port: 5173,
+    watch: {
+      usePolling: true
+    },
     proxy: {
       '/php': {
-        target: 'http://localhost',
+        target: 'http://nginx:80',
         changeOrigin: true,
         secure: false,
-        ws: true,
-        cookieDomainRewrite: '',
-        rewrite: path => path.replace(/^\/php/, '/track-learn/php_scripts')
+        rewrite: (path) => path.replace(/^\/php/, '/php_scripts')
       }
     }
   }
