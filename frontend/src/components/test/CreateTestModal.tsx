@@ -38,7 +38,14 @@ export default function CreateTestModal({ isOpen, onClose, onSuccess }: CreateTe
       try {
         const response = await fetch('/php/test/get_all_categories.php');
         if (!response.ok) throw new Error('Failed to fetch categories');
+        
         const data = await response.json();
+        
+        if (data.message) {
+          setCategories([]);
+          throw new Error(data.message);
+        }
+        
         setCategories(data);
       } catch (error) {
         console.error('Error fetching categories:', error);
