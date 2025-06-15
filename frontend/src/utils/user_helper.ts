@@ -10,7 +10,12 @@ export default async function getUserData() {
     }
     
     const data = await response.json();
-    return data.user || null;
+
+    if (data.error) {
+      throw new Error ('User not authenticated');
+    }
+
+    return data.user 
   } catch (error) {
     console.error('Error fetching user data:', error);
     return null;

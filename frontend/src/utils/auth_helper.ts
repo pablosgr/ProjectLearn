@@ -11,8 +11,9 @@ export default async function validateSession(): Promise<boolean> {
         }
         
         const data = await response.json();
-        if(data['error']){
-            console.error('Session validation error:', data['error']);
+
+        if(data.error){
+            console.error('Session validation error:', data.error);
             isSessionValid = false;
         }
     } catch (error) {

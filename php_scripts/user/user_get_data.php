@@ -5,7 +5,7 @@ require_once '../header.php';
 if (!isset($_SESSION["id"])) {
     echo json_encode([
         'message' => 'Failed',
-        'message' => 'User not authenticated'
+        'error' => 'User not authenticated'
     ]);
     exit;
 }
