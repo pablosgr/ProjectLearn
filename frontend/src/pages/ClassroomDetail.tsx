@@ -57,19 +57,18 @@ export default function ClassroomDetail() {
       if (!userData) return;
 
       try {
-        // If user is teacher, check if they own the classroom
+        // Check if, if teacher, they own the classroom
         if (userData.role === 'teacher') {
           setHasAccess(classroom?.teacher_id === userData.id);
           return;
         }
 
-        // If user is admin, they always have access
         if (userData.role === 'admin') {
           setHasAccess(true);
           return;
         }
 
-        // If user is student, check if they're enrolled
+        // Checks student enrollment
         if (userData.role === 'student') {
           const response = await fetch('/php/classroom/classroom_get_students.php', {
             method: 'POST',
@@ -121,7 +120,6 @@ export default function ClassroomDetail() {
     );
   }
 
-  // Add access check before main content
   if (!hasAccess) {
     return (
         <div className="mt-20 max-w-4xl mx-auto bg-orange-200 border border-orange-500 rounded-2xl p-6 text-center">

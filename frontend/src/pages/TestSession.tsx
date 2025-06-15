@@ -16,7 +16,7 @@ export default function TestSession() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [studentAnswers, setStudentAnswers] = useState<StudentAnswers>(() => {
-    // Initialize from localStorage if exists
+    // Initialize from localStorage (if exists)
     const saved = localStorage.getItem(`test_answers_${testId}`);
     return saved ? JSON.parse(saved) : {};
   });
@@ -26,13 +26,11 @@ export default function TestSession() {
   const [pageLoading, setPageLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
 
-  // Add enrollment check effect
   useEffect(() => {
     const checkEnrollment = async () => {
       if (!userData || !classroomId) return;
 
       try {
-        // Teachers and admins always have access
         if (userData.role === 'teacher' || userData.role === 'admin') {
           setHasAccess(true);
           return;
@@ -62,7 +60,6 @@ export default function TestSession() {
     checkEnrollment();
   }, [userData, classroomId]);
 
-  // Modify existing useEffect to depend on hasAccess
   useEffect(() => {
     const fetchTest = async () => {
       if (!hasAccess) return;
@@ -91,7 +88,6 @@ export default function TestSession() {
     }
   }, [testId, hasAccess]);
 
-  // Clear localStorage after successful submission
   const clearSavedAnswers = () => {
     localStorage.removeItem(`test_answers_${testId}`);
   };
@@ -102,7 +98,6 @@ export default function TestSession() {
       [questionId]: optionId
     };
     setStudentAnswers(newAnswers);
-    // Save to localStorage
     localStorage.setItem(`test_answers_${testId}`, JSON.stringify(newAnswers));
   };
 
@@ -174,17 +169,6 @@ export default function TestSession() {
     }
   };
 
-  // Add cleanup on component unmount
-  useEffect(() => {
-    return () => {
-      // Only clear if test was submitted successfully
-      if (submitting) {
-        clearSavedAnswers();
-      }
-    };
-  }, [submitting, testId]);
-
-  // Add page loading check
   if (pageLoading) {
     return (
       <div className='w-full pt-20 flex items-center justify-center'>
@@ -196,7 +180,6 @@ export default function TestSession() {
     );
   }
 
-  // Add access check
   if (!hasAccess) {
     return (
         <div className="mt-20 max-w-4xl mx-auto bg-orange-200 border border-orange-500 rounded-2xl p-6 text-center">

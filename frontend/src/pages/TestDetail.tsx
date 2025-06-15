@@ -40,7 +40,7 @@ export default function TestDetail() {
 
                 const testData = data[0];
 
-                // Validate author credentials for teacher role
+                // Validate author
                 if (userData?.role === 'teacher' && 
                     (testData.author_name !== userData.name || 
                      testData.author_username !== userData.username)) {
@@ -115,7 +115,6 @@ export default function TestDetail() {
         }
     };
 
-    // Add role check before main content
     if (!userData || (userData.role !== 'teacher' && userData.role !== 'admin')) {
         return (
             <div className="mt-20 max-w-4xl mx-auto bg-orange-200 border border-orange-500 rounded-2xl p-6 text-center">
@@ -148,7 +147,6 @@ export default function TestDetail() {
         );
     }
 
-    // Add validation error check after loading check
     if (validationError) {
         return (
             <div className="max-w-4xl mx-auto bg-red-50 border border-red-200 rounded-lg p-6 text-center">

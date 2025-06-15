@@ -43,7 +43,7 @@ export default function TestQuestions({ questions = [], onQuestionsUpdate, isTea
         options?: string[];
     }>>({});
 
-    // Add a guard clause at the start of the component
+    // Checks if questions is an array to avoid errors in map function
     if (!Array.isArray(questions)) {
         return null;
     }

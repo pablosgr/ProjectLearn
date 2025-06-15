@@ -31,9 +31,8 @@ const ClassroomCard: FC<ClassroomCardProps> = ({ id, name, teacherUsername, onDe
   };
 
   const handleCardClick = (e: React.MouseEvent) => {
-    // Prevent navigation when clicking delete button or modal
-    if ((e.target as HTMLElement).closest('.delete-btn') || 
-        (e.target as HTMLElement).closest('.modal-content')) {
+    const target = e.target as HTMLElement;
+    if (target.hasAttribute('data-no-navigate')) {
       e.stopPropagation();
       return;
     }
@@ -58,6 +57,7 @@ const ClassroomCard: FC<ClassroomCardProps> = ({ id, name, teacherUsername, onDe
             e.stopPropagation();
             setShowDeleteModal(true);
           }}
+          data-no-navigate
           className="
             delete-btn absolute top-2 right-2 p-2 rounded-lg transition-colors
             hover:bg-cyan-500 hover:bg-opacity-20 hover:cursor-pointer 
@@ -84,6 +84,7 @@ const ClassroomCard: FC<ClassroomCardProps> = ({ id, name, teacherUsername, onDe
           setShowDeleteModal(false);
         }}
         title="Delete Classroom"
+        data-no-navigate
       >
         <p>Are you sure you want to delete "{name}"? This action cannot be undone.</p>
       </Modal>
